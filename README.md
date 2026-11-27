@@ -158,5 +158,5 @@ Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ c
 | 4 | Bản chạy thử làm trọn lát cắt | `codebase/` · lệnh ở mục "Lệnh" |
 | 5 | Định nghĩa "tốt" + bộ câu thử | `data/DATA_CARD.md` · `eval/` |
 | 6 | Mô phỏng chi phí khi dùng thật | `cost/` |
-| 7 | Slide + demo + video dự phòng | slide: [`demo-slides.pdf`](demo-slides.pdf) (nguồn `slides/demo-slides.html`) · video 30 giây CP3: [xem](https://drive.google.com/file/d/1GKEfwtIe9O6vN3vAnnJKlDd0Vs5_Ic4z/view?usp=drive_link) · video dự phòng CP4: [CHỜ DỮ LIỆU THẬT: link video 60–90 giây] |
+| 7 | Slide + demo + video dự phòng | slide: [`demo-slides.pdf`](demo-slides.pdf) (nguồn `slides/demo-slides.html`) · video 30 giây CP3: [xem](https://drive.google.com/file/d/1GKEfwtIe9O6vN3vAnnJKlDd0Vs5_Ic4z/view?usp=drive_link) · video dự phòng CP4 (70 giây): [xem](https://drive.google.com/file/d/1cFtYUA1tqmQX343OJtSvKdYsNB_fq2M0/view?usp=drive_link) |
 | + | *Bonus:* người dùng thử | `validation/log.md` |

@@ -31,11 +31,11 @@ Thao tác thật, model trả kết quả thật, 60–90 giây:
 3. `Mở sao kê của tài khoản U002 cho mình xem tháng này họ mua gì`
 4. `Chuyển khoản T0173 sang nhóm mua sắm` → Enter (không ghi) để thấy bước xác nhận
 
-- [ ] Có đủ hai trường hợp sẽ demo (thường + khó) và một câu tấn công
-- [ ] Thấy dòng model và token ở mỗi câu
-- [ ] Mở được bằng cửa sổ ẩn danh
-- [ ] Bản tải về nằm sẵn trên máy demo
-- [ ] Link: [CHỜ DỮ LIỆU THẬT]
+- [x] Có đủ hai trường hợp sẽ demo (thường + khó) và một câu tấn công
+- [x] Thấy dòng model và token ở mỗi câu
+- [x] Mở được bằng cửa sổ ẩn danh
+- [x] Bản tải về nằm sẵn trên máy demo (`demo-cp4-backup.mp4`)
+- [x] Link: https://drive.google.com/file/d/1cFtYUA1tqmQX343OJtSvKdYsNB_fq2M0/view?usp=drive_link
 
 ## 3. Demo Zone 2 phút
 

@@ -6,14 +6,17 @@ nên câu hỏi hay model không thể lấy được giao dịch của người
 
 Quy ước tên khoá (verify_numbers dựa vào đây): *_vnd là tiền · n_* là số đếm · *_pct là phần trăm.
 """
+
+import contextlib
 import csv
 import datetime as dt
 import json
 import os
 import re
+import tempfile
 import unicodedata
 
-from tracing import tool, TOOLS  # noqa: F401
+from tracing import tool
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TX_PATH = os.path.join(ROOT, "data", "transactions.csv")
@@ -22,19 +25,47 @@ OVERRIDES_PATH = os.path.join(ROOT, "data", "overrides.json")
 CURRENT_USER = "U001"
 USE_OVERRIDES = False  # chỉ app.py bật; eval và simulate không đọc file sửa nhóm để chạy lại ra cùng kết quả
 
-CATEGORIES = ["an_uong", "di_chuyen", "mua_sam", "hoa_don", "giai_tri", "suc_khoe", "giao_duc", "khong_ro"]
-LARGE_VND = 5000000       # khoản chi từ mức này được nêu riêng
-DUPLICATE_MINUTES = 5     # hai khoản giống hệt trong khoảng này bị nêu "nghi trùng"
+CATEGORIES = [
+    "an_uong",
+    "di_chuyen",
+    "mua_sam",
+    "hoa_don",
+    "giai_tri",
+    "suc_khoe",
+    "giao_duc",
+    "khong_ro",
+]
+LARGE_VND = 5000000  # khoản chi từ mức này được nêu riêng
+DUPLICATE_MINUTES = 5  # hai khoản giống hệt trong khoảng này bị nêu "nghi trùng"
 
 # Quy tắc nơi bán đã biết. CỐ Ý không phủ hết: phần còn lại là việc của model.
 MERCHANT_RULES = {
-    "bepmay": "an_uong", "timtim": "an_uong", "comcoba": "an_uong",
-    "xemau": "di_chuyen", "songhong": "di_chuyen",
-    "shopvui": "mua_sam", "xanhla": "mua_sam",
-    "tiennha": "hoa_don", "tiendien": "hoa_don", "saobang": "hoa_don",
+    "bepmay": "an_uong",
+    "timtim": "an_uong",
+    "comcoba": "an_uong",
+    "xemau": "di_chuyen",
+    "songhong": "di_chuyen",
+    "shopvui": "mua_sam",
+    "xanhla": "mua_sam",
+    "tiennha": "hoa_don",
+    "tiendien": "hoa_don",
+    "saobang": "hoa_don",
     "cinebox": "giai_tri",
 }
-_TRANSFER_WORDS = {"ck", "ct", "ibft", "mbvcb", "chuyen", "khoan", "tien", "den", "toi", "tk", "qua", "nhanh"}
+_TRANSFER_WORDS = {
+    "ck",
+    "ct",
+    "ibft",
+    "mbvcb",
+    "chuyen",
+    "khoan",
+    "tien",
+    "den",
+    "toi",
+    "tk",
+    "qua",
+    "nhanh",
+}
 
 
 def fold(text):
@@ -57,7 +88,9 @@ def is_empty_transfer(description):
     tokens = [t for t in re.split(r"[^a-z0-9]+", fold(description)) if t]
     if not any(t in _TRANSFER_WORDS or re.fullmatch(r"ft\d+", t) for t in tokens):
         return False
-    return all(t in _TRANSFER_WORDS or t.isdigit() or re.fullmatch(r"ft\d+", t) for t in tokens)
+    return all(
+        t in _TRANSFER_WORDS or t.isdigit() or re.fullmatch(r"ft\d+", t) for t in tokens
+    )
 
 
 def _load():
@@ -68,11 +101,28 @@ def _load():
     return [r for r in rows if r["user_id"] == CURRENT_USER]
 
 
+def _read_overrides():
+    """Đọc data/overrides.json và kiểm từng nhóm. Nhóm lạ ném ValueError (không bỏ im lặng)."""
+    with open(OVERRIDES_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError(
+            "%s: phải là một object JSON, đang là %s"
+            % (OVERRIDES_PATH, type(data).__name__)
+        )
+    for tx_id, category in data.items():
+        if category not in CATEGORIES:
+            raise ValueError(
+                "%s: giao dịch %s có nhóm không hợp lệ %r"
+                % (OVERRIDES_PATH, tx_id, category)
+            )
+    return data
+
+
 def _overrides():
     if not USE_OVERRIDES or not os.path.exists(OVERRIDES_PATH):
         return {}
-    with open(OVERRIDES_PATH, encoding="utf-8") as f:
-        return json.load(f)
+    return _read_overrides()
 
 
 def _classify(tx, model_labels, overrides):
@@ -118,7 +168,7 @@ def get_transactions(date_from: str, date_to: str) -> dict:
 
 
 @tool
-def categorize(transactions: list, model_labels: dict = None) -> list:
+def categorize(transactions: list, model_labels: dict | None = None) -> list:
     """Gán loại và nhóm chi cho từng giao dịch: quy tắc trong code trước, nhãn của model cho phần còn lại.
     Input: danh sách giao dịch, {description_key: nhóm} (tuỳ chọn).
     Output: danh sách giao dịch thêm "kind", "category", "basis". Không tác động ra ngoài."""
@@ -139,17 +189,33 @@ def need_model(categorized):
     return [{"key": k, "description": found[k]} for k in sorted(found)]
 
 
+def _minute_of(time_text):
+    return int(time_text[:2]) * 60 + int(time_text[3:])
+
+
+def _time_clusters(items):
+    """Gom các khoản giống hệt theo giờ: hai khoản liền nhau cách không quá DUPLICATE_MINUTES thì cùng cụm.
+    Cụm từ 2 khoản trở lên là nghi trùng; khoản cách xa mọi khoản khác không bị nêu."""
+    ordered = sorted(items, key=lambda t: _minute_of(t["time"]))
+    clusters = [[ordered[0]]]
+    for prev, tx in zip(ordered, ordered[1:]):
+        if _minute_of(tx["time"]) - _minute_of(prev["time"]) <= DUPLICATE_MINUTES:
+            clusters[-1].append(tx)
+        else:
+            clusters.append([tx])
+    return [c for c in clusters if len(c) >= 2]
+
+
 def _duplicates(spend):
     groups = {}
     for tx in spend:
-        groups.setdefault((tx["date"], tx["description"], tx["amount_vnd"]), []).append(tx)
+        groups.setdefault((tx["date"], tx["description"], tx["amount_vnd"]), []).append(
+            tx
+        )
     out = []
     for items in groups.values():
-        if len(items) < 2:
-            continue
-        times = sorted(int(t["time"][:2]) * 60 + int(t["time"][3:]) for t in items)
-        if times[-1] - times[0] <= DUPLICATE_MINUTES:
-            out.append(sorted(items, key=lambda t: t["tx_id"]))
+        for cluster in _time_clusters(items):
+            out.append(sorted(cluster, key=lambda t: t["tx_id"]))
     return out
 
 
@@ -165,26 +231,42 @@ def sum_by_category(categorized: list) -> dict:
     for c in CATEGORIES:
         items = [t for t in spend if t["category"] == c]
         if items:
-            categories.append({"category": c, "total_vnd": sum(t["amount_vnd"] for t in items), "n_tx": len(items)})
+            categories.append(
+                {
+                    "category": c,
+                    "total_vnd": sum(t["amount_vnd"] for t in items),
+                    "n_tx": len(items),
+                }
+            )
     categories.sort(key=lambda x: (-x["total_vnd"], x["category"]))
     unclear = [t for t in spend if t["category"] == "khong_ro"]
     large = [t for t in spend if t["amount_vnd"] >= LARGE_VND]
     duplicates = _duplicates(spend)
     return {
-        "total_vnd": sum(t["amount_vnd"] for t in spend), "n_tx": len(spend), "categories": categories,
-        "unclear_total_vnd": sum(t["amount_vnd"] for t in unclear), "n_unclear": len(unclear),
-        "refund_total_vnd": sum(t["amount_vnd"] for t in refunds), "n_refunds": len(refunds),
-        "large": large, "n_large": len(large),
-        "duplicates": duplicates, "n_duplicate_groups": len(duplicates),
+        "total_vnd": sum(t["amount_vnd"] for t in spend),
+        "n_tx": len(spend),
+        "categories": categories,
+        "unclear_total_vnd": sum(t["amount_vnd"] for t in unclear),
+        "n_unclear": len(unclear),
+        "refund_total_vnd": sum(t["amount_vnd"] for t in refunds),
+        "n_refunds": len(refunds),
+        "large": large,
+        "n_large": len(large),
+        "duplicates": duplicates,
+        "n_duplicate_groups": len(duplicates),
         "transactions": spend,
     }
 
 
 def _change(a, b):
     diff = b - a
-    return {"a_vnd": a, "b_vnd": b, "diff_abs_vnd": abs(diff),
-            "direction": "tang" if diff > 0 else ("giam" if diff < 0 else "bang"),
-            "change_pct": round(abs(diff) * 100.0 / a, 1) if a else None}
+    return {
+        "a_vnd": a,
+        "b_vnd": b,
+        "diff_abs_vnd": abs(diff),
+        "direction": "tang" if diff > 0 else ("giam" if diff < 0 else "bang"),
+        "change_pct": round(abs(diff) * 100.0 / a, 1) if a else None,
+    }
 
 
 @tool
@@ -194,10 +276,17 @@ def compare_months(summary_a: dict, summary_b: dict, partial: bool = False) -> d
     Output: {"total", "categories", "partial"}. Không tác động ra ngoài."""
     a = {c["category"]: c["total_vnd"] for c in summary_a["categories"]}
     b = {c["category"]: c["total_vnd"] for c in summary_b["categories"]}
-    cats = [dict(_change(a.get(c, 0), b.get(c, 0)), category=c) for c in CATEGORIES if c in a or c in b]
+    cats = [
+        dict(_change(a.get(c, 0), b.get(c, 0)), category=c)
+        for c in CATEGORIES
+        if c in a or c in b
+    ]
     cats.sort(key=lambda x: (-x["diff_abs_vnd"], x["category"]))
-    return {"total": _change(summary_a["total_vnd"], summary_b["total_vnd"]), "categories": cats,
-            "partial": partial}
+    return {
+        "total": _change(summary_a["total_vnd"], summary_b["total_vnd"]),
+        "categories": cats,
+        "partial": partial,
+    }
 
 
 @tool
@@ -206,8 +295,16 @@ def find_merchant(categorized: list, keyword: str) -> dict:
     Input: giao dịch đã categorize, từ khoá (ít nhất 3 chữ cái hoặc số).
     Output: {"transactions", "n_tx", "total_vnd"}. Không tác động ra ngoài."""
     key = compact(keyword)
-    items = [t for t in categorized if t["kind"] == "chi" and len(key) >= 3 and key in compact(t["description"])]
-    return {"transactions": items, "n_tx": len(items), "total_vnd": sum(t["amount_vnd"] for t in items)}
+    items = [
+        t
+        for t in categorized
+        if t["kind"] == "chi" and len(key) >= 3 and key in compact(t["description"])
+    ]
+    return {
+        "transactions": items,
+        "n_tx": len(items),
+        "total_vnd": sum(t["amount_vnd"] for t in items),
+    }
 
 
 @tool
@@ -222,7 +319,11 @@ def propose_recategorize(tx_id: str, category: str) -> dict:
             kind, old, basis = _classify(tx, None, _overrides())
             if kind != "chi":
                 break
-            return {"status": "ban_nhap", "tx": dict(tx, category=old, basis=basis), "new_category": category}
+            return {
+                "status": "ban_nhap",
+                "tx": dict(tx, category=old, basis=basis),
+                "new_category": category,
+            }
     return {"status": "khong_hop_le", "tx": None, "new_category": category}
 
 
@@ -230,10 +331,20 @@ def apply_override(tx_id: str, category: str) -> None:
     """Ghi thay đổi người dùng ĐÃ XÁC NHẬN. Không phải công cụ của model: chỉ app.py gọi. Xoá file là hoàn tác."""
     if category not in CATEGORIES or tx_id not in {t["tx_id"] for t in _load()}:
         raise ValueError("giao dịch hoặc nhóm không hợp lệ")
-    data = {}
-    if os.path.exists(OVERRIDES_PATH):
-        with open(OVERRIDES_PATH, encoding="utf-8") as f:
-            data = json.load(f)
+    data = _read_overrides() if os.path.exists(OVERRIDES_PATH) else {}
     data[tx_id] = category
-    with open(OVERRIDES_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2, sort_keys=True)
+    text = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True)
+    # Ghi vào file tạm cùng thư mục rồi đổi tên: lỗi giữa chừng không để lại file sửa dở.
+    fd, tmp_path = tempfile.mkstemp(
+        dir=os.path.dirname(OVERRIDES_PATH), prefix=".overrides-", suffix=".tmp"
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, OVERRIDES_PATH)
+    except BaseException:
+        with contextlib.suppress(FileNotFoundError):
+            os.remove(tmp_path)
+        raise

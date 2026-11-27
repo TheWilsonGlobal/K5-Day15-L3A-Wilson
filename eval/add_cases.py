@@ -4,6 +4,7 @@
 
 Chỉ thêm: không sửa, không xoá dòng đã có. Từ chối nếu sau khi thêm, câu từ nguồn thật dưới 1/3.
 """
+
 import csv
 import io
 import os
@@ -11,7 +12,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import oracle  # noqa: E402
+import oracle  # noqa: E402  # import sau khi thêm eval/ vào sys.path
 
 DRAFT = os.path.join(HERE, "benchmark-draft.csv")
 REAL = ("nguoi_dung", "data_that")
@@ -40,21 +41,34 @@ def add(ids, bench=oracle.BENCH, draft=DRAFT):
     again = [i for i in ids if i in have]
     if again:
         raise ValueError("đã có trong bộ câu thử: %s" % ", ".join(again))
+    answers = oracle.cases(have | set(ids))
+    unanswered = [i for i in ids if i not in answers]
+    if unanswered:
+        raise ValueError(
+            "chưa có đáp án trong eval/oracle.py: %s" % ", ".join(unanswered)
+        )
     new = [drafts[i] for i in ids]
+    inputs = [r["input"] for r in new]
+    twice = sorted({i for i in inputs if inputs.count(i) > 1})
+    if twice:
+        raise ValueError("các câu mới trùng câu hỏi với nhau: %s" % twice[0])
     repeated = sorted({r["input"] for r in new} & {r["input"] for r in old})
     if repeated:
         raise ValueError("trùng câu hỏi đã có: %s" % repeated[0])
     total = len(old) + len(new)
     real = sum(map(is_real, old + new))
     if real * 3 < total:
-        raise ValueError("sau khi thêm chỉ có %d/%d câu từ nguồn thật (cần ≥ 1/3): bớt câu tu_viet" % (real, total))
+        raise ValueError(
+            "sau khi thêm chỉ có %d/%d câu từ nguồn thật (cần ≥ 1/3): bớt câu tu_viet"
+            % (real, total)
+        )
     with open(bench, "rb") as f:
         raw = f.read()
     end = "\r\n" if b"\r\n" in raw else "\n"
     out = io.StringIO()
     csv.DictWriter(out, fieldnames=fields, lineterminator=end).writerows(new)
-    with open(bench, "ab") as f:
-        f.write((b"" if raw.endswith(b"\n") else end.encode()) + out.getvalue().encode("utf-8"))
+    gap = b"" if raw.endswith(b"\n") else end.encode()
+    oracle.write_atomic(bench, raw + gap + out.getvalue().encode("utf-8"))
     return total, real
 
 
@@ -70,7 +84,10 @@ def main(args):
         print("Không thêm gì: %s" % error)
         return 1
     oracle.write_json()
-    print("Đã thêm %d câu → %d câu, %d từ nguồn thật. Đã ghi lại eval/oracle.json." % (len(args), total, real))
+    print(
+        "Đã thêm %d câu → %d câu, %d từ nguồn thật. Đã ghi lại eval/oracle.json."
+        % (len(args), total, real)
+    )
     return 0
 
 

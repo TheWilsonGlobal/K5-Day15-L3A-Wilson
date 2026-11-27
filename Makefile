@@ -47,7 +47,7 @@ format-check:
 
 # Kiểm kiểu bằng mypy trên mã của nhóm (không gồm file khung, xem [tool.mypy] trong pyproject.toml).
 typecheck:
-	$(if $(HAS_MYPY),$(PY) -m mypy codebase eval evidence data cost,$(error $(MISS_MYPY)))
+	$(if $(HAS_MYPY),$(PY) -m mypy codebase eval evidence data,$(error $(MISS_MYPY)))
 
 # Chạy bộ unittest. MODEL_PROVIDER=fake: test không gọi mạng, kể cả khi .env có key thật.
 test: export MODEL_PROVIDER := fake

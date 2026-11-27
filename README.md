@@ -61,10 +61,14 @@ Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay
 | `python run.py score eval/run-1.csv` | Sau khi điền cột `pass` (1 / 0): in % đạt tổng và theo `type`. Còn ô trống → "CHƯA CHẤM XONG", không in % |
 | `python run.py simulate --try` | Thử mô phỏng chi phí 10 phiên (làm trước CP3) → `cost/simulate-try.csv` |
 | `python run.py simulate` | Mô phỏng chi phí khi dùng thật theo `cost/personas.yaml` (≥50 phiên) → `cost/simulate-N.csv` + `cost/simulate-N-summary.md` |
-| `python eval/grade.py eval/run-1.csv` | Chấm một lượt theo `eval/metric_spec.yaml`: chỉ điền `pass`, `ghi_chu`; người rà lại |
+| `python eval/grade.py eval/run-1.csv` | Chấm một lượt theo `eval/metric_spec.yaml`: chỉ điền `pass`, `ghi_chu`; người rà lại. Chỉ chấm dòng còn trống `pass`. Kết luận §7 in "chưa kết luận" khi lượt chưa đủ điều kiện (xem dưới bảng) |
+| `python eval/grade.py eval/run-1.csv --force` | Chấm lại cả dòng do `grade.py` đã chấm; không bao giờ ghi đè dòng người đã rà |
+| `python eval/grade.py eval/run-1.csv --force-human` | Như `--force` và chấm lại cả dòng người đã rà; chữ ghi chú của người giữ nguyên văn |
 | `python eval/add_cases.py C11 C12 …` | Thêm câu đã duyệt từ `eval/benchmark-draft.csv` vào bộ câu thử và ghi lại `eval/oracle.json` |
 | `python eval/oracle.py` · `python eval/oracle.py --json` | Đáp án độc lập theo tháng và nhóm · ghi `eval/oracle.json` |
-| `python evidence/fetch_reviews.py` | Tải review công khai theo `evidence/data-mining.md` §1a (đã có mẫu thì không ghi đè nếu thiếu `--refresh`) |
+| `python evidence/fetch_reviews.py` | Tải review công khai theo `evidence/data-mining.md` §1a (đã có mẫu thì không ghi đè nếu thiếu `--refresh`). App lỗi (lỗi tải hoặc trang 1 trả rỗng) thì thoát 1, không ghi file nào; trang sau trang 1 trả rỗng là hết feed, giữ review đã tải. `reviews.csv` có dòng thừa hoặc thiếu ô thì thoát 1, không ghi gì. Các file đầu ra (`reviews.csv`, `fetch-log.json`, file `--dump`) ghi file tạm hết rồi mới đổi tên cùng đợt; đổi tên lỗi giữa chừng thì thông báo file nào đã đổi |
+| `python evidence/fetch_reviews.py --refresh` | Tải lại khi đã có mẫu (mẫu sẽ khác); không bao giờ bỏ dòng `human_verified` |
+| `python evidence/fetch_reviews.py --refresh --allow-partial` | Chỉ một phần app lỗi: cảnh báo, ghi mẫu từng phần, thoát 0; app lỗi ghi ở `failed_apps` trong `evidence/fetch-log.json`. Mọi app đều lỗi thì vẫn thoát 1, không ghi gì |
 | `python evidence/count.py` | Đếm phỏng vấn và review đã nhập: x/n, trích dẫn, chỗ còn thiếu |
 | `python data/generate.py` | Sinh lại dữ liệu giả lập (cùng seed ra cùng file) |
 | `python -m unittest discover -s codebase -p "test_*.py"` | Test, không gọi mạng |
@@ -73,6 +77,28 @@ Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay
 Gói miễn phí báo hết lượt: thêm `--wait 4` sau `eval` hoặc `simulate` (nghỉ 4 giây giữa hai lượt gọi). Sửa CSV bằng Excel: *File → Save As → CSV UTF-8*; Google Sheets: *Tệp → Tải xuống → CSV*.
 
 **Lượt có lỗi kỹ thuật** (cột `error` có chữ): không sửa tay file đó, chạy lại thành lượt mới và ghi vào bảng các lượt ở `eval/README.md`. Không xoá file lượt nào.
+
+**Kết luận §7 của `grade.py`:** chỉ đưa ra khi lượt đầy đủ: đủ mọi câu của bộ câu thử, có câu `tu_choi`, mọi dòng đã chấm và đã kiểm được số (có trace, không lỗi kỹ thuật), và không phải lượt `run-try` / `run-fake` / `run-mock` / `run-error` / `run-stopped`. Thiếu một điều thì in "chưa kết luận".
+
+### Cổng kiểm chất lượng (tuỳ chọn, chỉ khi phát triển)
+
+Chạy ứng dụng **không cần cài gì** (chỉ dùng thư viện chuẩn). Muốn dùng các cổng kiểm thì cài công cụ phát triển (ruff 0.17.4, mypy 2.4.1):
+
+```
+python -m pip install -r requirements-dev.txt
+```
+
+| Lệnh | Làm gì |
+|---|---|
+| `make lint` | `ruff check`, chỉ đọc |
+| `make format` | `ruff format`, **ghi** vào file; file khung được loại ra |
+| `make format-check` | Kiểm định dạng, không ghi |
+| `make typecheck` | `mypy` trên `codebase`, `eval`, `evidence`, `data`; lỗi ở file khung `tracing`, `run_eval`, `simulate` được bỏ qua theo `pyproject.toml` |
+| `make test` | Chạy unittest, ép `MODEL_PROVIDER=fake` |
+| `make build` | `compileall`: chỉ kiểm cú pháp, không đóng gói |
+| `make verify` | Lần lượt `lint` → `format-check` → `typecheck` → `test` → `build`, dừng ở chặng lỗi đầu tiên |
+
+`make` là tuỳ chọn: `python run.py …` vẫn là lệnh chính và chạy được trên Windows. Thiếu công cụ thì target dừng với exit 2 và in lệnh cài. Máy dùng lệnh Python khác thì ghi đè, ví dụ `make PY=py verify`.
 
 Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` trong `run.py` để `python run.py` vẫn chạy được bản chạy thử, và giữ `answer()` trong `codebase/agent.py` để `eval`, `simulate` chạy được.
 

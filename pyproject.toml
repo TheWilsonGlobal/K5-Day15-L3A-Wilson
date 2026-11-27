@@ -23,4 +23,12 @@ quote-style = "double"
 [tool.mypy]
 python_version = "3.10"
 # Khớp theo đường dẫn: tên file khung, bất kể dấu / hay \ trên Windows.
+# exclude chỉ bỏ file khi quét thư mục; khung vẫn bị kéo vào khi mã nhóm import nó (sys.path),
+# nên lỗi của khung được chặn bằng [[tool.mypy.overrides]] bên dưới, không bằng exclude.
 exclude = ['(^|[/\\])(tracing|run_eval|simulate)\.py$']
+
+# Chỉ chặn lỗi báo tại ba file khung (không được sửa). Mã nhóm giữ nguyên mức kiểm.
+# Không đặt ignore_errors toàn cục, không tắt mã lỗi cho mã nhóm.
+[[tool.mypy.overrides]]
+module = ["tracing", "run_eval", "simulate"]
+ignore_errors = true

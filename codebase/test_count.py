@@ -45,7 +45,7 @@ class TestCount(unittest.TestCase):
         self.assertIn("CHỜ DỮ LIỆU THẬT", count.report(reviews, people))
 
     def test_review_counts_denominator_is_all_rows(self):
-        rows = ["R%02d,app,kho,http://x,27/11,26/11,3,chu,%s,TV" % (i, label) for i, label in
+        rows = ["R%02d,app,kho,http://x,27/11,26/11,3,chu,%s,TV,false" % (i, label) for i, label in
                 enumerate(["kho_hieu_gd", "kho_tong_hop", "ngan_sach", "khac"], start=1)]
         path = self.write("reviews.csv", HEADER + "\n" + "\n".join(rows) + "\n")
         second = self.write("check.csv", "ma,nhan\nR01,kho_hieu_gd\nR02,khac\n")
@@ -53,9 +53,14 @@ class TestCount(unittest.TestCase):
         self.assertEqual((result["main"], result["n"], result["agree"]), (2, 4, (1, 2)))
         self.assertIn("2/4 review (50%)", count.report(result, count.count_interviews(self.tmp)))
         self.assertIn("Chưa đủ cỡ mẫu", count.report(result, count.count_interviews(self.tmp)))
+        self.assertIn("NHÁP, CHƯA PHẢI BẰNG CHỨNG", count.report(result, count.count_interviews(self.tmp)))
+        path = self.write("reviews.csv", HEADER + "\n" + "\n".join(r.replace(",false", ",true") for r in rows) + "\n")
+        result = count.count_reviews(path)
+        self.assertEqual((result["verified"], result["main_verified"]), (4, 2))
+        self.assertNotIn("NHÁP", count.report(result, count.count_interviews(self.tmp)))
 
     def test_unlabelled_or_personal_rows_are_reported(self):
-        path = self.write("reviews.csv", HEADER + "\nR1,a,k,http://x,27/11,,1,goi 0912 345 678,,TV\n")
+        path = self.write("reviews.csv", HEADER + "\nR1,a,k,http://x,27/11,,1,goi 0912 345 678,,TV,false\n")
         result = count.count_reviews(path)
         joined = " ".join(result["problems"])
         self.assertIn("chưa gắn nhãn", joined)

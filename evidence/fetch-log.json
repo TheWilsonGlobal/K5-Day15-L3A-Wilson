@@ -1,0 +1,38 @@
+{
+  "fetched_at": "2026-11-27T11:37:27",
+  "apps": [
+    {
+      "pages": 2,
+      "returned": 69,
+      "duplicate": 0,
+      "no_text": 0,
+      "not_vietnamese": 19,
+      "kept": 50,
+      "app": "MoMo",
+      "app_id": 918751511,
+      "errors": []
+    },
+    {
+      "pages": 2,
+      "returned": 51,
+      "duplicate": 0,
+      "no_text": 1,
+      "not_vietnamese": 0,
+      "kept": 50,
+      "app": "Techcombank Mobile",
+      "app_id": 1548623362,
+      "errors": []
+    },
+    {
+      "pages": 2,
+      "returned": 58,
+      "duplicate": 0,
+      "no_text": 1,
+      "not_vietnamese": 7,
+      "kept": 50,
+      "app": "Money Lover",
+      "app_id": 486312413,
+      "errors": []
+    }
+  ]
+}

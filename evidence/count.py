@@ -16,12 +16,14 @@ import sys
 import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-COLUMNS = ["ma", "app", "kho", "link", "ngay_xem", "ngay_review", "so_sao", "trich", "nhan", "nguoi_gan"]
+COLUMNS = ["ma", "app", "kho", "link", "ngay_xem", "ngay_review", "so_sao", "trich", "nhan", "nguoi_gan",
+           "human_verified"]
 MAIN = ["kho_hieu_gd", "kho_tong_hop", "kho_tim_gd"]   # tính vào số chính
 SIDE = ["ngan_sach", "gd_bi_chan"]                      # đếm riêng (hướng E2, E3)
 LABELS = MAIN + SIDE + ["khac"]
 MIN_REVIEWS, MIN_PEOPLE = 30, 3
 PERSONAL = re.compile(r"\d[\d .-]{7,}\d|[\w.+-]+@[\w-]+\.\w+")
+AMOUNT = re.compile(r"[1-9]\d{0,2}(?:[.,]\d{3})+")   # số tiền có dấu phân cách nghìn
 PAIN = {"co": "co", "khong": "khong", "mot phan": "mot_phan", "mot_phan": "mot_phan"}
 FIELDS = {"gap_pain": "Gặp pain", "so_lan_thang": "Số lần / 1 tháng qua", "so_phut": "Số phút lần gần nhất",
           "lan_gan_nhat": "Lần gần nhất", "xoay_xo": "Đang xoay xở bằng"}
@@ -30,6 +32,10 @@ FIELDS = {"gap_pain": "Gặp pain", "so_lan_thang": "Số lần / 1 tháng qua",
 def fold(text):
     s = unicodedata.normalize("NFD", (text or "").strip().lower().replace("đ", "d"))
     return "".join(c for c in s if not unicodedata.combining(c))
+
+
+def has_personal(text):
+    return any(not AMOUNT.fullmatch(m.group(0)) for m in PERSONAL.finditer(text))
 
 
 def read_csv(path):
@@ -60,10 +66,12 @@ def count_reviews(path, check_path=None):
         for column in ("link", "ngay_xem", "trich"):
             if not r[column]:
                 problems.append("%s thiếu cột %s" % (r["ma"], column))
-        if PERSONAL.search(r["trich"]):
+        if has_personal(r["trich"]):
             problems.append("%s: trích dẫn có chuỗi giống số điện thoại / tài khoản / email, che trước khi commit" % r["ma"])
     labelled = [r for r in clean if r["nhan"] in LABELS]
+    checked = [r for r in labelled if r["human_verified"].lower() == "true"]
     result = {
+        "verified": len(checked), "main_verified": sum(r["nhan"] in MAIN for r in checked),
         "n": len(clean), "labelled": len(labelled), "problems": problems,
         "main": sum(r["nhan"] in MAIN for r in labelled),
         "by_label": {label: sum(r["nhan"] == label for r in labelled) for label in LABELS},
@@ -98,7 +106,7 @@ def read_interview(path):
     section = re.search(r"(?ms)^## Trích nguyên văn[^\n]*\n(.*?)(?=^## |\Z)", text)
     quotes = re.findall(r"(?m)^[ \t]*[-*][ \t]*[\"“](.+?)[\"”]", section.group(1)) if section else []
     person["quotes"] = [q.strip() for q in quotes if q.strip() not in ("", "…", "...")]
-    person["personal"] = bool(PERSONAL.search(text.split("\n", 1)[-1]))
+    person["personal"] = has_personal(text.split("\n", 1)[-1])
     return person
 
 
@@ -151,15 +159,19 @@ def report(reviews, interviews):
         out.append("Mới gắn nhãn %d/%d dòng: chưa tính x/N." % (reviews["labelled"], n))
     else:
         out.append("")
-        out.append("**%d/%d review (%.0f%%)** kể khó khăn khi xem, hiểu hoặc tổng hợp giao dịch.%s"
-                   % (reviews["main"], n, 100.0 * reviews["main"] / n,
+        draft = reviews["verified"] < n
+        if draft:
+            out += ["**NHÁP, CHƯA PHẢI BẰNG CHỨNG:** người mới kiểm %d/%d dòng (trong đó %d thuộc 3 nhãn chính). "
+                    "Số dưới đây theo nhãn chưa kiểm hết." % (reviews["verified"], n, reviews["main_verified"]), ""]
+        out.append("**%d/%d review (%.0f%%)** kể khó khăn khi xem, hiểu hoặc tổng hợp giao dịch%s.%s"
+                   % (reviews["main"], n, 100.0 * reviews["main"] / n, " (nhãn nháp)" if draft else "",
                       "" if n >= MIN_REVIEWS else " Chưa đủ cỡ mẫu (cần ≥%d)." % MIN_REVIEWS))
         out += ["", "| Nhãn | Số review |", "|---|---:|"]
         out += ["| %s | %d |" % kv for kv in reviews["by_label"].items()]
         out += ["", "| App | Số chính / đã đọc |", "|---|---:|"]
         out += ["| %s | %d/%d |" % (app or "—", hit, total) for app, (hit, total) in sorted(reviews["by_app"].items())]
         out.append("")
-        out.append("Người thứ hai gắn nhãn: %s" % ("khớp %d/%d" % reviews["agree"] if reviews["agree"]
+        out.append("Người thứ hai gắn nhãn: %s" % ("khớp %d/%d" % reviews["agree"] if reviews["agree"] and reviews["agree"][1]
                                                    else "[CHỜ DỮ LIỆU THẬT: evidence/reviews-check.csv]"))
         out += [""] + ["- \"%s\" — %s · %s · [nguồn](%s) · xem %s"
                        % (r["trich"], r["ma"], r["app"], r["link"], r["ngay_xem"]) for r in reviews["quotes"]]

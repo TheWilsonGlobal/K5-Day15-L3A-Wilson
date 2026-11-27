@@ -62,7 +62,9 @@ Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay
 | `python run.py simulate --try` | Thử mô phỏng chi phí 10 phiên (làm trước CP3) → `cost/simulate-try.csv` |
 | `python run.py simulate` | Mô phỏng chi phí khi dùng thật theo `cost/personas.yaml` (≥50 phiên) → `cost/simulate-N.csv` + `cost/simulate-N-summary.md` |
 | `python eval/grade.py eval/run-1.csv` | Chấm một lượt theo `eval/metric_spec.yaml`: chỉ điền `pass`, `ghi_chu`; người rà lại |
+| `python eval/add_cases.py C11 C12 …` | Thêm câu đã duyệt từ `eval/benchmark-draft.csv` vào bộ câu thử và ghi lại `eval/oracle.json` |
 | `python eval/oracle.py` · `python eval/oracle.py --json` | Đáp án độc lập theo tháng và nhóm · ghi `eval/oracle.json` |
+| `python evidence/fetch_reviews.py` | Tải review công khai theo `evidence/data-mining.md` §1a (đã có mẫu thì không ghi đè nếu thiếu `--refresh`) |
 | `python evidence/count.py` | Đếm phỏng vấn và review đã nhập: x/n, trích dẫn, chỗ còn thiếu |
 | `python data/generate.py` | Sinh lại dữ liệu giả lập (cùng seed ra cùng file) |
 | `python -m unittest discover -s codebase -p "test_*.py"` | Test, không gọi mạng |

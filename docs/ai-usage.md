@@ -13,10 +13,10 @@ Cập nhật lần cuối: Thứ Sáu 27/11/2026. Việc làm thêm sau đó: b�
 | Code bản chạy thử (`codebase/`) | Claude Code | Viết công cụ, luồng, nối model, giao diện dòng lệnh, test | [CHỜ DỮ LIỆU THẬT: đã đọc file nào, sửa gì] | [CHỜ DỮ LIỆU THẬT] |
 | Prompt và thiết kế lời gọi model | Claude Code | Viết hai prompt, danh sách giá trị cho phép, bộ lọc mô tả đáng ngờ, bước kiểm số | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] |
 | Dữ liệu `synthetic` (`data/`) | Claude Code | Viết bộ sinh và nhãn thật, seed `20261127` | [CHỜ DỮ LIỆU THẬT: kiểm tay ≥30 dòng, khớp x/30] | [CHỜ DỮ LIỆU THẬT] |
-| Câu thử (`eval/benchmark.csv`) | Claude Code | Soạn 10 câu nháp: 9 `tu_viet`, 1 `sinh_seed` | [CHỜ DỮ LIỆU THẬT: duyệt câu và đáp án; thêm câu từ nguồn thật] | [CHỜ DỮ LIỆU THẬT] |
+| Câu thử (`eval/benchmark.csv`) | Claude Code | Soạn 10 câu nháp: 9 `tu_viet`, 1 `sinh_seed`; soạn thêm 20 câu chờ duyệt (7 dựa trên review, 13 `tu_viet`), script thêm câu và phiếu chấm chéo, phiếu kiểm dữ liệu, phiếu gắn nhãn thứ hai | [CHỜ DỮ LIỆU THẬT: duyệt câu và đáp án; thêm câu từ nguồn thật] | [CHỜ DỮ LIỆU THẬT] |
 | Đáp án và bộ chấm | Claude Code | Viết `oracle.py`, `grade.py`, `metric_spec.yaml` theo phương án đã chốt | [CHỜ DỮ LIỆU THẬT: chấm chéo 5 output, khớp x/5] | [CHỜ DỮ LIỆU THẬT] |
 | Chấm cột `pass` | Không dùng LLM chấm | `grade.py` chấm bằng code | [CHỜ DỮ LIỆU THẬT: người rà mỗi lượt] | [CHỜ DỮ LIỆU THẬT] |
-| Bằng chứng | Claude Code | Soạn giả thuyết nháp, cách lấy mẫu, kịch bản phỏng vấn, script đếm. **Không** tạo người, trích dẫn hay số liệu | [CHỜ DỮ LIỆU THẬT: xác nhận giả thuyết viết trước khi hỏi; sửa gì trong kịch bản] | [CHỜ DỮ LIỆU THẬT] |
+| Bằng chứng | Claude Code | Soạn giả thuyết nháp, cách lấy mẫu, kịch bản phỏng vấn, script đếm; viết script tải review công khai, tải 150 review và **gắn nhãn nháp**. **Không** tạo người, trích dẫn hay review | [CHỜ DỮ LIỆU THẬT: xác nhận giả thuyết viết trước khi hỏi; sửa gì trong kịch bản; kiểm nhãn x/150 dòng] | [CHỜ DỮ LIỆU THẬT] |
 | Tra nguồn công khai | Claude Code (tìm web) | Tìm trang sản phẩm tương tự và nguồn số người dùng | [CHỜ DỮ LIỆU THẬT: mở từng link, dùng thử sản phẩm] | [CHỜ DỮ LIỆU THẬT] |
 | Chi phí | Claude Code | Soạn persona *(tự ước tính)*, chép giá từ bảng của BTC | [CHỜ DỮ LIỆU THẬT: sửa số theo phỏng vấn] | [CHỜ DỮ LIỆU THẬT] |
 | Slide, kịch bản, tài liệu | Claude Code | Soạn `spec.md`, slide, kịch bản demo, khung báo cáo, README | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] |

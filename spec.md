@@ -63,7 +63,7 @@ So sánh theo thiết kế (nhóm đánh giá, không phải bằng chứng):
 |---|---|---|---|
 | MoMo · Quản lý chi tiêu ([trang](https://www.momo.vn/quan-ly-chi-tieu), [bản tin 9/2025](https://www.momo.vn/tin-tuc/thong-bao/ban-tin-gop-y-va-tinh-nang-moi-thang-9-2025-8004)) | Gán nhóm cho nhiều giao dịch một lúc; báo cáo tổng hợp sẵn | Trọng tâm là giao dịch trong MoMo, khoản ngoài phải nhập thêm | Hỏi bằng lời thường, câu trả lời kèm mã giao dịch; nói rõ phần "Không rõ" |
 | Money Lover ([App Store](https://apps.apple.com/vn/app/money-lover-s%E1%BB%95-thu-chi/id486312413?l=vi)) | Liên kết ngân hàng để khỏi nhập tay | Liên kết ví là gói trả phí; cách tự phân loại chưa kiểm được | Chỉ làm một việc: trả lời câu hỏi chi tiêu |
-| Cleo ([hỗ trợ](https://web.meetcleo.com/faqs/en/articles/3487741-who-is-cleo), [App Store](https://apps.apple.com/us/app/cleo-get-up-to-%24100-spot/id1447274646)) | Chat hỏi "tiêu bao nhiêu cho ăn uống"; chỉ đọc dữ liệu | Có bài đánh giá nêu người dùng thấy phân nhóm đôi khi sai; thị trường nước ngoài | Tiếng Việt, mô tả sao kê Việt; model không viết con số nào |
+| Cleo ([hỗ trợ](https://web.meetcleo.com/faqs/en/articles/3487741-who-is-cleo), [App Store](https://apps.apple.com/us/app/cleo-get-up-to-%24100-spot/id1447274646)) | Chat hỏi "tiêu bao nhiêu cho ăn uống"; chỉ đọc dữ liệu | Trang hỗ trợ của Cleo ghi tự phân nhóm đôi khi sai ([bài "Why is Cleo showing me the wrong info?"](https://web.meetcleo.com/faqs/en/articles/3335175-why-is-cleo-showing-me-the-wrong-info), xem 27/11/2026); thị trường nước ngoài | Tiếng Việt, mô tả sao kê Việt; model không viết con số nào |
 
 ## §4. Thiết kế *(guide 2.2, 3.2)*
 

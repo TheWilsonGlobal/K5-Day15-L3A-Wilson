@@ -14,7 +14,7 @@
 | Cột | `tx_id, user_id, date, time, amount_vnd, direction, channel, description` |
 | Phiên bản | v1, sinh ngày 27/11/2026. **Đóng băng tại CP2**: đổi dữ liệu sẽ làm sai đáp án câu thử |
 | Nhãn | `synthetic` |
-| Người kiểm | [CHỜ DỮ LIỆU THẬT: người kiểm tay ≥30 dòng, ghi x/30 khớp] |
+| Người kiểm | [CHỜ DỮ LIỆU THẬT: người kiểm tay ≥30 dòng, ghi x/30 khớp] · phiếu `data/kiem-tay.csv` (30 dòng `U001` rút ngẫu nhiên, seed `20261127`; điền cột `khop`) |
 
 **Cố ý dựng cho khó**
 

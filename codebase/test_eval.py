@@ -18,6 +18,7 @@ for folder in (HERE, os.path.join(ROOT, "eval")):
         sys.path.insert(0, folder)
 os.environ["MODEL_PROVIDER"] = "fake"
 
+import add_cases  # noqa: E402
 import agent  # noqa: E402
 import grade  # noqa: E402
 import oracle  # noqa: E402
@@ -27,11 +28,16 @@ from test_tools import ModelStub  # noqa: E402
 
 with open(os.path.join(ROOT, "eval", "benchmark.csv"), encoding="utf-8-sig", newline="") as f:
     BENCH = {r["id"]: r for r in csv.DictReader(f)}
+with open(add_cases.DRAFT, encoding="utf-8-sig", newline="") as f:
+    DRAFT = {r["id"]: r for r in csv.DictReader(f)}
+ALL = dict(DRAFT, **BENCH)   # câu đã trong bộ + câu soạn sẵn
 
 
 def ideal_plan(case):
     """Kế hoạch mà một model hiểu đúng câu hỏi sẽ trả."""
     plan = dict(case["plan"], intent=case["plan"]["intent"][0])
+    if plan["intent"] == "noi_ban":   # đáp án không so tên nơi bán nguyên văn, nhưng kế hoạch phải có
+        plan["merchant"] = "cơm cô ba"
     if plan["intent"] == "tu_choi":
         words = case["must_contain"][0] if case["must_contain"] else "không tư vấn đầu tư"
         plan["reason"] = next(k for k, v in agent.REFUSALS.items() if words in v)
@@ -54,8 +60,49 @@ class TestBenchmark(unittest.TestCase):
 
     def test_types(self):
         self.assertTrue({r["type"] for r in BENCH.values()} == {"thuong", "kho", "tu_choi"})
-        for case_id, case in oracle.cases().items():
-            self.assertEqual("tu_choi_dung" in case["metrics"], BENCH[case_id]["type"] == "tu_choi", case_id)
+        for case_id, case in oracle.cases(ALL).items():
+            self.assertEqual("tu_choi_dung" in case["metrics"], ALL[case_id]["type"] == "tu_choi", case_id)
+
+    def test_every_draft_case_has_an_answer_and_review_source_exists(self):
+        self.assertEqual(set(oracle.draft_cases()), set(DRAFT))
+        with open(os.path.join(ROOT, "evidence", "reviews.csv"), encoding="utf-8-sig", newline="") as f:
+            reviews = {r["ma"] for r in csv.DictReader(f)}
+        for row in DRAFT.values():
+            if row["source"].startswith("data_that"):
+                self.assertIn(row["source"].split()[-1], reviews, row["id"])
+
+
+class TestAddCases(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        self.bench, self.draft = os.path.join(tmp, "bench.csv"), os.path.join(tmp, "draft.csv")
+        head = "id,input,expected,pass_criterion,type,source\r\n"
+        with open(self.bench, "w", encoding="utf-8-sig", newline="") as f:
+            f.write(head + "C01,a,e,p,kho,tu_viet\r\n")
+        with open(self.draft, "w", encoding="utf-8-sig", newline="") as f:
+            f.write(head + 'C11,"b, c",e,p,kho,data_that: review 1\r\nC12,d,e,p,kho,tu_viet\r\n'
+                    + 'C13,g,e,p,kho,tu_viet\r\nC14,h,e,p,kho,tu_viet\r\n')
+
+    def read(self):
+        with open(self.bench, "rb") as f:
+            return f.read()
+
+    def test_appends_and_keeps_old_bytes(self):
+        before = self.read()
+        self.assertEqual(add_cases.add(["C11"], self.bench, self.draft), (2, 1))
+        self.assertTrue(self.read().startswith(before))
+        self.assertEqual([r["input"] for r in add_cases.read(self.bench)[1]], ["a", "b, c"])
+
+    def test_rejects_bad_requests_without_writing(self):
+        before = self.read()
+        for ids in ([], ["C99"], ["C12"], ["C11", "C11"], ["C11", "C12", "C13"]):
+            with self.assertRaises(ValueError):
+                add_cases.add(ids, self.bench, self.draft)
+        self.assertEqual(self.read(), before)
+        add_cases.add(["C11"], self.bench, self.draft)
+        with self.assertRaises(ValueError):
+            add_cases.add(["C11"], self.bench, self.draft)
 
 
 class TestGrader(unittest.TestCase):
@@ -70,9 +117,9 @@ class TestGrader(unittest.TestCase):
         rows, events = [], []
         for case_id, plan in plans.items():
             with mock.patch.object(agent, "call_model", tracing.model_call(ModelStub(plan).__call__)):
-                row, trace = run_eval.call_case(agent.answer, tracing, case_id, BENCH[case_id]["input"])
+                row, trace = run_eval.call_case(agent.answer, tracing, case_id, ALL[case_id]["input"])
             self.assertEqual(row["error"], "")
-            row.update({k: BENCH[case_id][k] for k in ("id", "type", "input", "expected", "pass_criterion")})
+            row.update({k: ALL[case_id][k] for k in ("id", "type", "input", "expected", "pass_criterion")})
             row.update({"run_id": "run-9@test", "pass": "", "ghi_chu": ""})
             rows.append(row)
             events += [dict(e, case=case_id) for e in trace]
@@ -83,12 +130,15 @@ class TestGrader(unittest.TestCase):
             f.writelines(json.dumps(e, ensure_ascii=False, default=str) + "\n" for e in events)
 
     def grade(self):
-        with mock.patch.object(grade, "ROOT", self.tmp):
+        answers = os.path.join(self.tmp, "oracle.json")
+        with mock.patch.object(oracle, "benchmark_ids", lambda: set(ALL)):
+            oracle.write_json(answers)
+        with mock.patch.object(grade, "ROOT", self.tmp), mock.patch.object(oracle, "ORACLE_JSON", answers):
             rows, stats, manual = grade.grade_file(self.path)
         return {r["id"]: r for r in rows}, stats, manual
 
     def test_ideal_model_passes_every_case_and_other_columns_are_kept(self):
-        self.make_run({i: ideal_plan(c) for i, c in oracle.cases().items()})
+        self.make_run({i: ideal_plan(c) for i, c in oracle.cases(ALL).items()})
         with open(self.path, encoding="utf-8-sig", newline="") as f:
             before = list(csv.DictReader(f))
         rows, _, manual = self.grade()

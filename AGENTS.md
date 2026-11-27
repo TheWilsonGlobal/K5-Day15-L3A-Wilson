@@ -1,6 +1,6 @@
 # AGENTS.md — hướng dẫn cho coding agent (Claude Code, Cursor, Codex…) làm việc trong repo này
 
-> Ôn lại: ngày 12 · lab ngày 12. Nhóm sửa file này cho khớp bài của mình (thêm quy ước riêng, bỏ dòng không dùng).
+> Nhóm Wilson · Track E · E1 giải thích chi tiêu từ sao kê (dữ liệu giả lập).
 
 ## Repo này là gì
 
@@ -13,7 +13,9 @@ python run.py                    # chạy bản chạy thử
 python run.py check              # kiểm eval/benchmark.csv + eval/metric_spec.yaml
 python run.py eval --try         # thử 3 câu đầu
 python run.py eval               # chạy cả bộ → eval/run-N.csv + traces/run-N.jsonl
+python eval/grade.py eval/run-N.csv
 python run.py score eval/run-N.csv
+python -m unittest discover -s codebase -p "test_*.py"
 python run.py simulate --try     # thử mô phỏng chi phí 10 phiên
 python run.py simulate           # mô phỏng chi phí → cost/simulate-N.csv
 ```
@@ -40,6 +42,24 @@ Khung chỉ dùng thư viện chuẩn của Python. Thêm thư viện thì ghi v
 
 ## Quy ước của nhóm
 
-- Ngôn ngữ trả lời người dùng: __
-- Phong cách code / đặt tên: __
-- Ai duyệt thay đổi do agent tạo trước khi commit: __
+- **Ngôn ngữ:** trả lời người dùng, tài liệu và chú thích bằng tiếng Việt; xưng "mình", gọi "bạn".
+- **Code:** chỉ thư viện chuẩn Python; tên hàm tiếng Anh, giá trị miền tiếng Việt không dấu (`an_uong`, `tong_chi`); khoá `*_vnd` là tiền, `n_*` là số đếm, `*_pct` là phần trăm (`verify_numbers` dựa vào đây).
+- **Duyệt:** agent không tự commit, không push, không tạo nhánh. Phạm Ngọc Sơn (đội trưởng) duyệt diff trước khi commit.
+- **Trước khi đề nghị commit:** test đạt, `python run.py check` chạy được, `git ls-files .env` rỗng.
+
+## Bất biến của bài toán — không được phá
+
+- Model chỉ trả JSON gồm giá trị trong danh sách cho phép; không viết chữ cho người dùng, không tính toán.
+- Mọi số tiền do `tools.py` tính; câu trả lời dựng từ mẫu và qua `verify_numbers`.
+- Không công cụ nào nhận mã người dùng làm tham số; không có công cụ chuyển tiền hay giao dịch.
+- Mô tả đáng ngờ không đi vào lời gọi gán nhóm chung.
+- `codebase/` không đọc `data/labels.csv`; `eval/oracle.py` không import `tools.py` hay `agent.py`.
+- Đáp án: không nói thời gian → tháng hiện tại và nói rõ · hoàn tiền không trừ vào tổng chi · tháng đang dở so cùng kỳ.
+- Prompt và code không chứa nguyên văn input của câu thử.
+
+## Bí mật và dữ liệu
+
+- Không đọc, in, log hay dán giá trị trong `.env`; `.env.example` chỉ có tên biến, giá trị trống.
+- Key đi trong header, không trong URL; thông báo lỗi phải xoá key trước khi ném ra (lỗi được ghi vào file sẽ commit).
+- Chỉ dùng dữ liệu giả lập: không đưa sao kê thật, tên, số điện thoại, số tài khoản thật vào repo hay vào model.
+- Test không gọi mạng (`MODEL_PROVIDER=fake`).

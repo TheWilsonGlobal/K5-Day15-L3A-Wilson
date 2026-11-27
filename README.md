@@ -1,35 +1,10 @@
-> Đây là khung repo nộp bài. Điền mọi chỗ `____`, giữ nguyên tên các mục. **Mục 0 xoá đi sau khi tạo repo xong.**
-> Giờ, mốc, luật, rubric: xem `README.md`, `02-guide.md`, `03-rubric.md` trong repo đề (bộ đề BTC phát).
+# Wilson — Giải thích chi tiêu từ sao kê
 
-# [Tên nhóm] — [Tên lát cắt]
+**Thành viên, lớp, track:** xem [TEAMS.md](TEAMS.md).
 
-**Thành viên, lớp, track:** xem [TEAMS.md](TEAMS.md). **Điền TEAMS.md đúng format**: khi chấm và đánh giá, BTC quét file này để ghép điểm cho từng người.
+**Lát cắt:** một nhân viên văn phòng trẻ hỏi bằng tiếng Việt về chi tiêu của mình · AI chọn khoảng thời gian và công cụ, gán "không rõ" khi giao dịch không đủ căn cứ · người dùng nhận câu trả lời có số do code tính, kèm bảng giao dịch dẫn chứng và sửa được nhóm chi. Dữ liệu là sao kê giả lập; thiết kế ở [spec.md](spec.md) §4.
 
-*Lát cắt = phần nhỏ nhất làm xong được trong hackathon: một người dùng · một việc · một quyết định AI · một kết quả.*
-
----
-
-## 0. Tạo repo nhóm từ khung này *(guide bước 1.0 — xoá mục này khi xong)*
-
-**Hai luật:** repo **mới, công khai (Public)** · tên `K5-Day15-<lớp>-<tên nhóm>`, vd `K5-Day15-L3A-StudyPulse` (tên nhóm viết liền, không dấu). Chép **nội dung bên trong** `starter-repo/` — `README.md`, `run.py` phải nằm ngay ở trang đầu repo.
-
-**(a) Không cần terminal — làm trên web GitHub**
-1. **New repository** → tên theo mẫu → **Public** → không tick thêm gì → tạo.
-2. Trên máy mở thư mục `starter-repo/`, **bật hiện file ẩn** (Mac Finder: `Cmd + Shift + .` · Windows: View → Show → Hidden items) để thấy `.gitignore`, `.env.example`.
-3. Trên repo vừa tạo: **Add file → Upload files** → **kéo thả** tất cả file và thư mục bên trong `starter-repo/` → **Commit changes**. Kéo thả mới giữ được thư mục con; lỗi vì nhiều file quá thì tải từng thư mục.
-4. Kiểm: có `.gitignore` chưa (hay thiếu nhất). Thiếu thì **Add file → Create new file**, tên `.gitignore`, dán nội dung từ máy.
-5. Từ giờ sửa file ngay trên web (biểu tượng bút chì → Commit). Phần code vẫn cần **một** người chạy được trên máy: trước mỗi lượt chạy tải **Code → Download ZIP** về thư mục mới (mang `.env` sang), chạy xong chỉ upload file kết quả và file vừa sửa; trong lúc đang chạy không ai sửa `eval/benchmark.csv` trên web.
-
-**(b) Dùng git**
-```bash
-git clone https://github.com/<tai-khoan>/K5-Day15-L3A-TenNhom.git
-cd K5-Day15-L3A-TenNhom
-cp -R ../duong-dan-toi/starter-repo/. .      # Windows PowerShell: Copy-Item -Recurse -Force ..\duong-dan-toi\starter-repo\* .
-git status                                   # không được có .env, data-btc/
-git add -A && git commit -m "Khung repo từ starter-repo" && git push
-```
-
-**Xong khi:** mở link repo bằng **cửa sổ ẩn danh** thấy được file (link nộp CP1) · đã mời thành viên (Settings → Collaborators) · đã điền `TEAMS.md` và `python run.py check` không báo gì ở phần "Kiểm TEAMS.md".
+**Không làm:** chuyển tiền hay giao dịch hộ · tư vấn đầu tư · xem chi tiêu của người khác · nhận sao kê thật.
 
 ---
 
@@ -68,7 +43,9 @@ Gõ `dir` (Windows) hoặc `ls` (macOS / Linux): thấy `run.py` và `README.md`
 
 - Windows: gõ `python` mà mở Microsoft Store hoặc báo không có lệnh → dùng `py`. Chưa có Python: cài từ python.org, **tick "Add python.exe to PATH"**, mở lại PowerShell.
 - macOS: báo `command not found: python` là bình thường → dùng `python3`.
-- `python run.py` in ra "[câu trả lời giả — chưa nối model] …" là khung chạy đúng. Nối model thật: [docs/connect-model.md](docs/connect-model.md).
+- Chưa có `.env`: `python run.py` chạy chế độ giả, câu trả lời mở đầu bằng `[GIẢ]` và luôn giống nhau.
+- Chạy model thật: trong `.env` điền `MODEL_PROVIDER` (`gemini` hoặc `groq`), `MODEL_NAME`, `API_KEY`; tuỳ chọn `API_KEYS` (khoá dự phòng cách nhau dấu phẩy, dùng khi gặp HTTP 429). Không commit `.env`.
+- Thử hỏi: `Trong tháng 10 mình chi tất cả bao nhiêu?` · `Tiền ăn uống ngốn mất bao nhiêu rồi?`
 
 Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay `py` thì gõ thay.
 
@@ -84,6 +61,10 @@ Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay
 | `python run.py score eval/run-1.csv` | Sau khi điền cột `pass` (1 / 0): in % đạt tổng và theo `type`. Còn ô trống → "CHƯA CHẤM XONG", không in % |
 | `python run.py simulate --try` | Thử mô phỏng chi phí 10 phiên (làm trước CP3) → `cost/simulate-try.csv` |
 | `python run.py simulate` | Mô phỏng chi phí khi dùng thật theo `cost/personas.yaml` (≥50 phiên) → `cost/simulate-N.csv` + `cost/simulate-N-summary.md` |
+| `python eval/grade.py eval/run-1.csv` | Chấm một lượt theo `eval/metric_spec.yaml`: chỉ điền `pass`, `ghi_chu`; người rà lại |
+| `python eval/oracle.py` · `python eval/oracle.py --json` | Đáp án độc lập theo tháng và nhóm · ghi `eval/oracle.json` |
+| `python data/generate.py` | Sinh lại dữ liệu giả lập (cùng seed ra cùng file) |
+| `python -m unittest discover -s codebase -p "test_*.py"` | Test, không gọi mạng |
 | `python run.py simulate --rate-from eval/run-2.csv` | Như trên, lấy tỉ lệ đạt từ đúng lượt chỉ định. Không ghi thì khung lấy lượt `run-N` mới nhất đã chấm, cùng model, và ghi rõ đã lấy lượt nào trong bản tóm tắt |
 
 Gói miễn phí báo hết lượt: thêm `--wait 4` sau `eval` hoặc `simulate` (nghỉ 4 giây giữa hai lượt gọi). Sửa CSV bằng Excel: *File → Save As → CSV UTF-8*; Google Sheets: *Tệp → Tải xuống → CSV*.
@@ -94,28 +75,29 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 ## Bản chạy thử — viết ở đâu
 
-| File | Viết gì | Bước guide |
-|---|---|---|
-| `codebase/agent.py` | `answer(text)` — luồng chính, đúng hình dạng ở `spec.md` §4. Khung có sẵn một workflow 2 bước *ví dụ* | 3.2 |
-| `codebase/tools.py` | Công cụ của bài toán, mỗi công cụ một hàm có `@tool` | 2.2, 3.2 |
-| `codebase/ai.py` | `call_model(system, user)` — chỗ duy nhất gọi model. Chưa điền `.env` thì chạy **chế độ giả** | 3.3 |
+| File | Nội dung |
+|---|---|
+| `codebase/agent.py` | `answer(text)`: workflow cố định, tối đa 2 lần gọi model, kiểm số trước khi trả lời |
+| `codebase/tools.py` | Công cụ đọc và tính, mỗi hàm một `@tool`; mọi phép tính nằm ở đây |
+| `codebase/ai.py` | `call_model(system, user)`: Gemini, Groq hoặc chế độ giả |
+| `codebase/app.py` | Giao diện dòng lệnh, bước người dùng xác nhận khi đổi nhóm chi |
 
-- **Trước CP2:** để chế độ giả, công cụ trả dữ liệu giả — `python run.py` đi hết luồng là đủ.
-- **Trước CP3:** nối model thật theo [docs/connect-model.md](docs/connect-model.md), `eval --try` thấy token > 0 rồi mới `eval`.
-- Bộ chạy gửi **nguyên ô `input`** của câu thử vào `answer(text)`. Dữ liệu nền (bài học, thông báo, lịch…) để trong `data/`, đọc qua công cụ.
+Bộ chạy gửi **nguyên ô `input`** của câu thử vào `answer(text)`. Dữ liệu nằm ở `data/`, chỉ đọc qua công cụ.
 
 ## Phần nào thật, phần nào giả
 
 | Thành phần | Thật / Giả | Ghi chú |
 |---|---|---|
-| Lời gọi AI ở quyết định trung tâm | **Thật** (bắt buộc từ CP3) | Model: ____ |
-|  |  |  |
+| Lời gọi AI ở quyết định trung tâm | **Thật** khi có `.env` | `gemini-3.5-flash-lite`: hiểu câu hỏi và gán nhóm mô tả lạ. Nhánh `groq` cũng đã thử. Không có `.env` thì giả (`[GIẢ]`) |
+| Tính tổng, so sánh, câu trả lời | Thật | Code tính và dựng từ mẫu; model không viết con số |
+| Sao kê và người dùng | **Giả** | Synthetic, tự sinh (`data/DATA_CARD.md`); không kết nối ngân hàng hay ví |
+| Đăng nhập | **Giả** | Người dùng cố định `U001` |
+| Ngày "hôm nay" | **Giả** | Cố định 27/11/2026 |
+| Đổi nhóm chi | Thật, cục bộ | Chỉ ghi `data/overrides.json` sau khi người dùng xác nhận trong `app.py` |
 
 ## Dùng AI vào việc gì
 
-2–3 dòng (bắt buộc): nhóm dùng công cụ AI nào để làm gì, người kiểm lại phần nào. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
-
-____
+Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ câu thử nháp và tài liệu. Phần người kiểm lại: ____. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
 
 ## File mẫu — điền ở bước nào
 

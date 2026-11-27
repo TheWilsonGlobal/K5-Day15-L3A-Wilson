@@ -188,14 +188,16 @@ def _change(a, b):
 
 
 @tool
-def compare_months(summary_a: dict, summary_b: dict) -> dict:
+def compare_months(summary_a: dict, summary_b: dict, partial: bool = False) -> dict:
     """So hai kết quả sum_by_category: chênh lệch từ a sang b, tổng và từng nhóm.
-    Input: summary_a (mốc so), summary_b. Output: {"total", "categories"}. Không tác động ra ngoài."""
+    Input: summary_a (mốc so), summary_b, partial (True khi so cùng kỳ vì một tháng chưa đủ ngày).
+    Output: {"total", "categories", "partial"}. Không tác động ra ngoài."""
     a = {c["category"]: c["total_vnd"] for c in summary_a["categories"]}
     b = {c["category"]: c["total_vnd"] for c in summary_b["categories"]}
     cats = [dict(_change(a.get(c, 0), b.get(c, 0)), category=c) for c in CATEGORIES if c in a or c in b]
     cats.sort(key=lambda x: (-x["diff_abs_vnd"], x["category"]))
-    return {"total": _change(summary_a["total_vnd"], summary_b["total_vnd"]), "categories": cats}
+    return {"total": _change(summary_a["total_vnd"], summary_b["total_vnd"]), "categories": cats,
+            "partial": partial}
 
 
 @tool

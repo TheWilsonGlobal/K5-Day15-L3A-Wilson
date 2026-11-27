@@ -21,6 +21,10 @@ MAX_MODEL_CALLS = 2
 TABLE_LIMIT = 10
 FAKE_TAG = "[GIẢ] "
 LABEL_TASK = "NHIỆM VỤ: GÁN NHÓM CHI"
+MAX_DESCRIPTION = 80   # mô tả dài hơn thì không đưa vào lời gọi gán nhóm chung
+# Dấu hiệu mô tả đang "ra lệnh" (so trên chữ đã bỏ dấu, ký hiệu đổi thành dấu cách). Thà nhầm về "Không rõ".
+SUSPICIOUS_WORDS = re.compile(r"\b(?:ignore|disregard|system|assistant|prompt|instructions?|json|"
+                              r"bo qua|huong dan|gan thanh|gan nhom|xep .{0,40}?vao|phan loai|tra ve)\b")
 
 NAMES = {"an_uong": "Ăn uống", "di_chuyen": "Đi lại", "mua_sam": "Mua sắm", "hoa_don": "Hoá đơn",
          "giai_tri": "Giải trí", "suc_khoe": "Sức khoẻ", "giao_duc": "Học tập", "khong_ro": "Không rõ"}
@@ -53,8 +57,10 @@ Các khoá:
   so_sanh: so hai tháng · liet_ke: liệt kê giao dịch · noi_ban: chi tại một nơi bán ·
   sua_nhom: đổi nhóm của một giao dịch · hoi_lai: thiếu thông tin để làm · tu_choi: việc không được làm
 - "from", "to": YYYY-MM-DD (bắt buộc với tong_chi, theo_nhom, nhieu_nhat, liet_ke, noi_ban).
-  Không nói thời gian thì lấy tháng hiện tại đến hôm nay và đặt "assumed_time": true.
+  Câu hỏi không nói thời gian thì lấy tháng hiện tại đến hôm nay và đặt "assumed_time": true;
+  có nói thời gian (kể cả "tháng này") thì không đặt khoá này.
 - "m1", "m2": YYYY-MM cho so_sanh; m1 là tháng làm mốc (cũ hơn), m2 là tháng cần xem.
+  So sánh mà không nói tháng nào thì bỏ cả m1 và m2.
 - "category": một trong %(categories)s (bắt buộc với theo_nhom; tuỳ chọn với liet_ke, so_sanh).
   khong_ro là các giao dịch chưa rõ nhóm.
 - "merchant": tên nơi bán đúng như người dùng viết (bắt buộc với noi_ban).
@@ -128,10 +134,15 @@ def validate_plan(raw):
     elif intent == "hoi_lai":
         plan["missing"] = raw.get("missing") if raw.get("missing") in QUESTIONS else "noi_dung"
     elif intent == "so_sanh":
-        m1, m2 = _month(raw.get("m1")), _month(raw.get("m2"))
+        if raw.get("m1") in (None, "") and raw.get("m2") in (None, ""):
+            previous = AS_OF.replace(day=1) - dt.timedelta(days=1)
+            m1, m2 = (previous.year, previous.month), (AS_OF.year, AS_OF.month)
+            plan["assumed_time"] = True
+        else:
+            m1, m2 = _month(raw.get("m1")), _month(raw.get("m2"))
         if not m1 or not m2 or m1 == m2:
             return None
-        plan.update(m1=m1, m2=m2)
+        plan.update(m1=min(m1, m2), m2=max(m1, m2))
     elif intent == "sua_nhom":
         tx_id, new = raw.get("tx_id"), raw.get("new_category")
         if not isinstance(tx_id, str) or not re.fullmatch(r"[A-Za-z]\d{4}", tx_id.strip()):
@@ -140,7 +151,12 @@ def validate_plan(raw):
             return {"intent": "hoi_lai", "missing": "nhom", "assumed_time": False}
         plan.update(tx_id=tx_id.strip().upper(), new_category=new)
     else:
-        start, end = _date(raw.get("from")), _date(raw.get("to"))
+        if raw.get("from") in (None, "") and raw.get("to") in (None, ""):
+            plan["assumed_time"] = True
+        if plan["assumed_time"]:   # quy ước: không nói thời gian → tháng hiện tại, code tự đặt
+            start, end = AS_OF.replace(day=1), AS_OF
+        else:
+            start, end = _date(raw.get("from")), _date(raw.get("to"))
         if not start or not end or start > end:
             return None
         plan.update(start=start, end=end)
@@ -152,6 +168,26 @@ def validate_plan(raw):
                 return None
             plan["merchant"] = merchant.strip()[:60]
     return plan
+
+
+def is_suspicious(description):
+    """Mô tả giao dịch có dấu hiệu cài lệnh: quá dài, có ký hiệu cấu trúc, hoặc có từ ra lệnh."""
+    if len(description) > MAX_DESCRIPTION or re.search(r"[{}<>\[\]\r\n`]", description):
+        return True
+    return bool(SUSPICIOUS_WORDS.search(re.sub(r"[^a-z0-9]+", " ", tools.fold(description))))
+
+
+def plan_record(plan):
+    """Kế hoạch đã kiểm, viết lại đúng dạng JSON model trả: để ghi trace và cho eval/grade.py chạy lại."""
+    out = {}
+    for key, value in plan.items():
+        if key in ("start", "end"):
+            out["from" if key == "start" else "to"] = value.isoformat()
+        elif key in ("m1", "m2"):
+            out[key] = "%d-%02d" % value
+        elif value is not False:
+            out[key] = value
+    return out
 
 
 # ------------------------------------------------------------------ định dạng và kiểm số
@@ -239,8 +275,12 @@ def _notes(summary):
 # ------------------------------------------------------------------ các bước
 
 def _labels(categorized, state):
-    """LLM lần 2: MỘT lời gọi cho mọi kiểu mô tả quy tắc chưa gán được."""
-    pending = tools.need_model(categorized)
+    """LLM lần 2: MỘT lời gọi cho mọi kiểu mô tả quy tắc chưa gán được.
+    Mô tả đáng ngờ bị tách ra TRƯỚC khi gom: không gửi model, giữ khong_ro, nên không lái được nhãn mục khác."""
+    found = tools.need_model(categorized)
+    pending = [p for p in found if not is_suspicious(p["description"])]
+    if len(pending) < len(found):
+        note("tách %d mô tả đáng ngờ khỏi lời gọi gán nhóm, giữ khong_ro" % (len(found) - len(pending)))
     if not pending:
         return {}
     items = [{"id": str(i), "mo_ta": p["description"][:160]} for i, p in enumerate(pending, start=1)]
@@ -250,8 +290,12 @@ def _labels(categorized, state):
         note("gán nhóm: model trả sai định dạng, giữ khong_ro")
         state["label_failed"] = True
         return {}
-    return {p["key"]: answer_map.get(str(i)) for i, p in enumerate(pending, start=1)
+    used = {str(i): answer_map[str(i)] for i in range(1, len(pending) + 1)
             if answer_map.get(str(i)) in tools.CATEGORIES}
+    pairs = ["%s=%s" % item for item in used.items()]
+    for at in range(0, len(pairs), 12):   # trace cắt mỗi dòng ở 300 ký tự nên ghi theo nhóm
+        note("NHAN " + ";".join(pairs[at:at + 12]))
+    return {p["key"]: used[str(i)] for i, p in enumerate(pending, start=1) if str(i) in used}
 
 
 def _fetch(ranges, state, need_labels=True):
@@ -275,7 +319,8 @@ def _spending(plan, data, state):
     period = "từ %s đến %s" % (day(start), day(end))
     lines = []
     if plan["assumed_time"]:
-        lines.append("Bạn không nói thời gian nên mình lấy tháng này.")
+        lines.append("Bạn không nói thời gian nên mình lấy tháng này (%02d/%d, từ %s đến %s)."
+                     % (AS_OF.month, AS_OF.year, day(start), day(end)))
     if plan["start"] < first or plan["end"] > last:
         lines.append("Dữ liệu chỉ có từ %s đến %s, mình tính trong phần đó." % (day(first), day(last)))
 
@@ -337,8 +382,8 @@ def _change_text(change):
     return "%s %s%s" % (word, money(change["diff_abs_vnd"]), percent)
 
 
-def _compare_block(title, a, b, name_a, name_b, category):
-    result = tools.compare_months(a, b)
+def _compare_block(title, a, b, name_a, name_b, category, partial=False):
+    result = tools.compare_months(a, b, partial)
     if category:
         row = next((c for c in result["categories"] if c["category"] == category), None)
         if not row:
@@ -368,8 +413,11 @@ def _comparison(plan, data, state):
     a, b = tools.sum_by_category(parts[0]), tools.sum_by_category(parts[1])
     results = [a, b]
     lines = []
+    if plan["assumed_time"]:
+        lines.append("Bạn không nói thời gian nên mình so %s với %s." % (names[1], names[0]))
     partial = [i for i, (_, end) in enumerate(ranges) if end > last]
     if partial:
+        plan["partial"] = True
         lines.append("Chú ý: %s mới có dữ liệu đến %s, so cả tháng sẽ lệch." % (names[partial[0]], day(last)))
         same, spans = [], []
         for part, (start, end) in zip(parts, ranges):
@@ -377,7 +425,7 @@ def _comparison(plan, data, state):
             spans.append("%s đến %s" % (day(start), day(limit)))
             same.append(tools.sum_by_category([t for t in part if t["date"] <= limit.isoformat()]))
         title = "Cùng kỳ (%s so với %s)" % tuple(spans)
-        block, result = _compare_block(title, same[0], same[1], names[0], names[1], plan.get("category"))
+        block, result = _compare_block(title, same[0], same[1], names[0], names[1], plan.get("category"), True)
         lines += block
         results += same + [result]
         title = "Số đang có (một tháng chưa đủ ngày)"
@@ -419,6 +467,8 @@ def answer(text: str) -> dict:
     fake = reply["model"] == "fake"
     plan = validate_plan(parse_json(reply["text"]))
     results, draft = [], None
+    if plan is not None:
+        note("KH " + json.dumps(plan_record(plan), ensure_ascii=False, separators=(",", ":")))
     if plan is None:
         note("dừng: kế hoạch không hợp lệ, hỏi lại")
         plan = {"intent": "hoi_lai"}
@@ -446,4 +496,4 @@ def answer(text: str) -> dict:
         output, draft = BLOCKED, None
     if fake:
         output = FAKE_TAG + output
-    return {"output": output, "plan": plan, "draft": draft}
+    return {"output": output, "plan": plan, "draft": draft, "results": results}

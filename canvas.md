@@ -1,0 +1,16 @@
+# Canvas — Wilson · Track E
+
+> Điền ở guide bước 1.4. CP1 17:00 Thứ Sáu 27/11: nộp bản đầu, đủ 7 dòng (dòng 4 được ghi giả thuyết + nguồn sẽ kiểm).
+> CP2 19:30 Thứ Sáu 27/11: cập nhật (số bằng chứng đầu, lát cắt đã chốt) và điền dòng "Đã đổi gì so với CP1".
+> Track F: chép thêm thẻ đề của nhóm (khung trong file track F) xuống dưới bảng này.
+
+| # | Dòng | Nhóm điền |
+|---|---|---|
+| 1 | Track + lát cắt dự kiến | Track E (E1 · Tài chính): Trợ lý giải thích chi tiêu từ sao kê giao dịch cho người dùng app ngân hàng / ví điện tử. |
+| 2 | Người dùng chính (một vai cụ thể — không phải "học viên nói chung") | Nhân viên văn phòng trẻ (22–30 tuổi) thanh toán hằng ngày qua app ngân hàng số / ví điện tử (MoMo, ZaloPay, ngân hàng) và muốn kiểm tra dòng tiền cuối tuần/cuối tháng. |
+| 3 | Pain một câu: ai — đang làm gì — vướng đâu — hậu quả | Nhân viên văn phòng trẻ mở sao kê cuối tháng để xem tiền đã đi đâu, nhưng danh sách giao dịch dài với mô tả viết tắt/lộn xộn không gộp được theo nhóm chi, khiến họ phải tự lọc cộng thủ công 15–30 phút mỗi tháng hoặc bỏ qua không kiểm soát chi tiêu. |
+| 4 | Bằng chứng đầu — CP1: giả thuyết + nguồn sẽ kiểm · CP2: số đầu tiên + 1 trích dẫn | Giả thuyết: ≥60% người dùng ví/app ngân hàng từng không biết tiền đi đâu cuối tháng và ngại cộng sao kê tay do mô tả khó đọc. Nguồn kiểm trước CP2: (1) đọc & gắn nhãn ≥30 review công khai của app ngân hàng/ví trên App Store & Google Play; (2) phỏng vấn ≥4 người dùng ngoài nhóm về lần gần nhất xem sao kê. |
+| 5 | **Lát cắt MỘT CÂU** (1 người dùng · 1 việc · 1 quyết định AI · 1 kết quả) | Một nhân viên văn phòng trẻ hỏi bằng tiếng Việt tự nhiên về chi tiêu của mình ("tháng này mình tiêu ăn uống bao nhiêu, tăng so với tháng trước không?") → AI chọn khoảng thời gian, gọi công cụ lọc/cộng sao kê và gán `"không rõ"` cho giao dịch mơ hồ → người dùng nhận câu trả lời có số khớp 100% công cụ kèm bảng giao dịch dẫn chứng và có thể sửa nhóm chi. |
+| 6 | AI tự làm đến đâu + 1 dòng lý do: sai thì ai chịu gì | Chỉ đọc sao kê, gọi tool tính toán và gán nhãn đề xuất; **không tự cộng nhẩm, không giao dịch hộ, không tư vấn đầu tư** — vì sai số liệu tài chính làm mất niềm tin ngay lập tức, còn tư vấn đầu tư/giao dịch tự động gây thiệt hại tiền thật cho người dùng. |
+| 7 | Phân công có tên | Phạm Ngọc Sơn (thiết kế giải pháp, agent & tool calling); [TV2] (bằng chứng pain: review + phỏng vấn); [TV3] (synthetic data + bộ câu thử `eval/`); [TV4] (mô phỏng chi phí `cost/` + slide & demo). *(Cập nhật đủ tên sau khi chốt vai trò)* |
+| — | *(CP2)* Đã đổi gì so với CP1 | *(Điền ở CP2)* |

@@ -30,6 +30,8 @@ def main() -> int:
     try:
         import tracing
         from agent import answer
+        import tools
+        tools.USE_OVERRIDES = True  # bản chạy thử đọc thay đổi người dùng đã xác nhận; eval và simulate thì không
     except Exception as e:  # lỗi cú pháp, thiếu thư viện… trong codebase/
         print("Không nạp được codebase/ — lỗi ở %s: %s: %s" % (_where(e), type(e).__name__, e))
         print("Sửa lỗi rồi chạy lại. Cách nối model: docs/connect-model.md")
@@ -63,6 +65,17 @@ def main() -> int:
         print(result.get("output", "") if isinstance(result, dict) else result)
         print("   (model: %s · gọi model %d lần · công cụ %d lần · token vào %d / ra %d)"
               % (", ".join(s["models"]) or "—", s["model_calls"], s["tool_calls"], s["tokens_in"], s["tokens_out"]))
+        draft = result.get("draft") if isinstance(result, dict) else None
+        if draft:  # chỗ người duyệt: chỉ ghi khi người dùng gõ "c"
+            try:
+                ok = input("Ghi thay đổi này? (c = có / Enter = không) ").strip().lower() == "c"
+            except (EOFError, KeyboardInterrupt):
+                ok = False
+            if ok:
+                tools.apply_override(draft["tx_id"], draft["category"])
+                print("Đã ghi vào data/overrides.json (xoá file để hoàn tác).")
+            else:
+                print("Không ghi gì.")
 
 
 if __name__ == "__main__":

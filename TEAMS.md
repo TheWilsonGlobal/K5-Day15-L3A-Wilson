@@ -12,7 +12,7 @@
 | STT | Họ và tên | Mã học viên | Vai trò | Phần việc chính |
 |---|---|---|---|---|
 | 1 | Phạm Ngọc Sơn | 2A202603533 | Đội trưởng | Thiết kế giải pháp, agent & công cụ, điều phối |
-| 2 | Nguyễn Thị Hải Yến | 2A202603567 | Thành viên | Dữ liệu synthetic, bộ câu thử eval, báo cáo & slide |
+| 2 | ____ | ____ | Thành viên | ____ |
 | 3 | ____ | ____ | Thành viên | ____ |
 | 4 | ____ | ____ | Thành viên | ____ |
 

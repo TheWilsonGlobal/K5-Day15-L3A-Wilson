@@ -41,13 +41,16 @@ load_env()
 MODEL_PROVIDER = (os.environ.get("MODEL_PROVIDER") or "fake").strip().lower()
 MODEL_NAME = (os.environ.get("MODEL_NAME") or "").strip()
 API_KEY = (os.environ.get("API_KEY") or "").strip()
+FAKE_PLAN = '{"intent": "nhieu_nhat", "from": "2026-11-01", "to": "2026-11-27"}'
 
 
 @model_call
 def call_model(system: str, user: str) -> dict:
     if MODEL_PROVIDER == "fake":
-        last = (user.strip().splitlines() or [""])[-1]
-        return {"text": "[câu trả lời giả — chưa nối model] " + last[:60], "model": "fake", "tokens_in": 0, "tokens_out": 0}
+        # Chế độ giả KHÔNG đọc câu hỏi: luôn trả một kế hoạch cố định (hoặc không gán nhãn nào),
+        # chỉ để luồng đi hết. agent.py gắn thẻ [GIẢ] vào câu trả lời khi model == "fake".
+        text = "{}" if system.startswith("NHIỆM VỤ: GÁN NHÓM CHI") else FAKE_PLAN
+        return {"text": text, "model": "fake", "tokens_in": 0, "tokens_out": 0}
 
     # NHÓM VIẾT: gọi model thật ở đây (theo MODEL_PROVIDER, MODEL_NAME, API_KEY) rồi trả đúng 4 khoá.
     # Ví dụ chép được cho từng nhà cung cấp: docs/connect-model.md mục 2.

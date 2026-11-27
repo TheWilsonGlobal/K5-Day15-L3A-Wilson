@@ -6,6 +6,7 @@
 *service-account*.json
 credentials*.json
 # File sinh ra khi chạy
+data/overrides.json
 __pycache__/
 *.pyc
 .venv/

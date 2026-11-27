@@ -74,6 +74,13 @@ Thay cho bản 1b (viết 10:30, chưa lấy review nào theo bản đó). Lý d
 - Thứ Sáu 27/11 11:36, trước khi tải review: đổi app, kho, cỡ mẫu và cách trích theo mục 1a; thêm cột `human_verified`.
 - Thứ Sáu 27/11, trước khi đọc review: viết sẵn `evidence/count.py`; nhãn của người thứ hai ghi ở `evidence/reviews-check.csv` (cột `ma,nhan`). Cách lấy mẫu và cách đếm giữ nguyên.
 - Thứ Sáu 27/11 buổi trưa, sau khi tải: 10 review cho người thứ hai rút ngẫu nhiên từ 150 (seed `20261127`), ghi sẵn ở `evidence/reviews-check.csv`, không kèm nhãn nháp. Phiếu chỉ có đoạn trích, nên người thứ hai thấy ít chữ hơn lúc gắn nhãn nháp; không mở `reviews.csv` hay `labels-draft.csv` trước khi điền.
+- Thứ Sáu 27/11 khoảng 18:00, **sau khi đã đọc data**: người kiểm chốt ranh giới nhãn: trừ tiền bất ngờ hoặc không được giải thích tính là `kho_hieu_gd` (người dùng cần được giải thích khoản trên sao kê); chuyển liên ngân hàng bị treo, lỗi và tranh cãi tiền phạt trả góp tính là `khac`. Đổi 2 nhãn: `14831017080` `kho_hieu_gd` → `khac`; `14272479886` `ngan_sach` → `kho_tong_hop`. Số 3 nhãn chính giữ 11/150; phân bố theo nhãn và theo app đổi (mục 3). Bảng nhãn 1b, cách lấy mẫu và mẫu số giữ nguyên.
+
+### Cách người kiểm (27/11/2026)
+
+- Phạm Ngọc Sơn xác nhận đã kiểm 150/150 dòng trên bảng duyệt gồm mã, app, số sao, nhãn nháp và **đoạn trích** (không phải toàn bộ review), kèm gợi ý của Claude ở các dòng ranh giới. Đây không phải gắn nhãn mù hay độc lập.
+- Đổi 2 nhãn, giữ 148 nhãn nháp. Nhãn nháp ban đầu còn ở `evidence/labels-draft.csv`.
+- Người thứ hai gắn nhãn độc lập 10 review: [CHỜ DỮ LIỆU THẬT: x/10].
 
 ## 2. Đọc trước, đếm sau
 
@@ -85,7 +92,7 @@ Lấy lúc 11:37 Thứ Sáu 27/11/2026 (số đếm trong `evidence/fetch-log.js
 | Techcombank Mobile | 51 | 0 | 1 | 0 | 50 |
 | Money Lover | 58 | 0 | 1 | 7 | 50 |
 
-Ghi chú của Claude sau khi đọc 150 review (**nháp, chờ người đọc lại**):
+Ghi chú của Claude sau khi đọc 150 review (viết trước khi người kiểm; câu hỏi về trừ phí bất ngờ đã được quyết ở mục 1):
 
 - Giữ nguyên bảng nhãn ở 1b, không thêm nhãn.
 - Phần lớn không liên quan: khen chung, lỗi chuyển khoản, lỗi phiên bản iOS, quảng cáo, giá gói.
@@ -94,29 +101,35 @@ Ghi chú của Claude sau khi đọc 150 review (**nháp, chờ người đọc 
 
 ## 3. Kết quả
 
-> **NHÁP, CHƯA PHẢI BẰNG CHỨNG.** Nhãn do Claude gắn, người chưa kiểm dòng nào (0/150). Số chính thức lấy từ `python evidence/count.py` sau khi kiểm.
+Số từ `python evidence/count.py`, sau khi người kiểm đủ 150/150 dòng (27/11/2026).
 
 | Đếm gì | Nháp (nhãn máy) | Sau khi người kiểm |
 |---|---|---|
-| Khó xem, hiểu, tổng hợp giao dịch (3 nhãn chính) | 11/150 (7%) | [CHỜ DỮ LIỆU THẬT] |
-| – trong đó `kho_hieu_gd` · `kho_tong_hop` · `kho_tim_gd` | 8 · 1 · 2 | [CHỜ DỮ LIỆU THẬT] |
-| – theo app: MoMo · Techcombank Mobile · Money Lover | 3/50 · 6/50 · 2/50 | [CHỜ DỮ LIỆU THẬT] |
-| Cảnh báo ngân sách (`ngan_sach`, hướng E2) | 1/150 | [CHỜ DỮ LIỆU THẬT] |
-| Giao dịch bị chặn (`gd_bi_chan`, hướng E3) | 0/150 | [CHỜ DỮ LIỆU THẬT] |
+| Khó xem, hiểu, tổng hợp giao dịch (3 nhãn chính) | 11/150 (7%) | **11/150 (7%)** |
+| – trong đó `kho_hieu_gd` · `kho_tong_hop` · `kho_tim_gd` | 8 · 1 · 2 | 7 · 2 · 2 |
+| – theo app: MoMo · Techcombank Mobile · Money Lover | 3/50 · 6/50 · 2/50 | 2/50 · 6/50 · 3/50 |
+| Cảnh báo ngân sách (`ngan_sach`, hướng E2) | 1/150 | 0/150 |
+| Giao dịch bị chặn (`gd_bi_chan`, hướng E3) | 0/150 | 0/150 |
 | Người thứ hai gắn nhãn khớp | — | [CHỜ DỮ LIỆU THẬT: x/10] |
+
+Đọc con số:
+
+- Tỉ lệ thấp (7%): mẫu là review mới nhất, không lọc từ khoá, phần lớn là khen ngắn, lỗi chuyển khoản, lỗi phiên bản iOS, quảng cáo và giá gói.
+- Phần lớn `kho_hieu_gd` là bị trừ tiền hoặc phí bất ngờ. Trong các đoạn trích của 11 review nhóm chính, không đoạn nào than về **mô tả giao dịch viết tắt, khó đọc** như giả thuyết nêu; đoạn gần nhất là đề nghị đọc mô tả để tự phân loại (`14272479886`).
 
 ## 4. ≥5 ví dụ cụ thể (mã review, đã bỏ tên)
 
-Nhãn nháp; [CHỜ DỮ LIỆU THẬT: người kiểm xác nhận từng ví dụ]. Trích nguyên văn; link nguồn và ngày xem của từng mã ở `evidence/reviews.csv`.
+Nhãn đã được người kiểm xác nhận. Trích nguyên văn; link nguồn và ngày xem (27/11/2026) của từng mã ở `evidence/reviews.csv`.
 
-| Mã | App | Ngày review | Nhãn nháp | Trích |
+| Mã | App | Ngày review | Nhãn | Trích |
 |---|---|---|---|---|
-| `14827102118` | Techcombank Mobile | 2026-11-23 | kho_tong_hop | "Lược bỏ biểu đồ thu chi hàng tháng" |
-| `14807101798` | Techcombank Mobile | 2026-11-18 | kho_hieu_gd | "Sao kê thẻ charge 2 lần tiền, gọi tổng đài bận, email không phản hồi, vài ngày sau lên kiểm tra thì đã tự ý chỉnh sửa" |
-| `14830552939` | Techcombank Mobile | 2026-11-24 | kho_hieu_gd | "Thẻ tín dụng mình chưa từng sử dụng đột nhiên lại bị trừ tiền phí thường niên mà bản thân mình còn chưa hề kích hoạt nó lên trên app bây giờ lại bị trừ phí oan uổng ngay từ đầu lại không nói rõ ràng về phí thường niên luôn nói là thẻ thì miễn phí cho người dùng lâu năm nên mình mới đồng ý lấy thẻ để sử dụng cho kế hoạch sau này. Bây giờ còn chưa kích hoạt thẻ lên lại bị trừ phí thường niên khó hiểu ấy thật sự tự nhiên thấy thông báo sao kê làm mình ngờ ngợ, ngân hàng làm ăn khó hiểu" |
-| `14826930912` | Techcombank Mobile | 2026-11-23 | kho_hieu_gd | "Lúc chào hàng mở không nói gì tới giờ nộp tiền vào trừ hết 132k của sinh viên cuối tháng rồi xoay sở sao :)))" |
 | `14805495226` | Techcombank Mobile | 2026-11-18 | kho_hieu_gd | "Nhập mã giới thiệu vào tự nhiên ngân hàng tôi bị rút luôn 20k ?" |
 | `14831470315` | MoMo | 2026-11-24 | kho_hieu_gd | "ko hiểu kiểu j có nợ ví momo đâu mà h thành nợ mà tiền thì ko thấy đâu ?" |
+| `14806709387` | Techcombank Mobile | 2026-11-18 | kho_hieu_gd | "Thi thoảng lấy 2k của t thee techcombank😑" |
+| `14826930912` | Techcombank Mobile | 2026-11-23 | kho_hieu_gd | "Lúc chào hàng mở không nói gì tới giờ nộp tiền vào trừ hết 132k của sinh viên cuối tháng rồi xoay sở sao :)))" |
+| `14807101798` | Techcombank Mobile | 2026-11-18 | kho_hieu_gd | "Sao kê thẻ charge 2 lần tiền, gọi tổng đài bận, email không phản hồi, vài ngày sau lên kiểm tra thì đã tự ý chỉnh sửa" |
+| `14827102118` | Techcombank Mobile | 2026-11-23 | kho_tong_hop | "Lược bỏ biểu đồ thu chi hàng tháng" |
+| `14272479886` | Money Lover | 2026-07-06 | kho_tong_hop | "Ngoài ra giao dịch sync từ ngân hàng nên có tính năng đọc mô tả để tự phân loại giao dịch" |
 | `14618149831` | Money Lover | 2026-10-02 | kho_tim_gd | "Mất tiền mất lịch sử giao dịch đã ghi ra" |
 
 ## 5. Giới hạn của data
@@ -127,5 +140,8 @@ Nhãn nháp; [CHỜ DỮ LIỆU THẬT: người kiểm xác nhận từng ví d
 - Người viết review thường đang bực, nên % trong review không phải % của mọi người dùng.
 - Review app thiên về lỗi đăng nhập, chuyển tiền; khó khăn khi tổng hợp chi tiêu có thể ít được viết ra.
 - Review không cho biết người viết có đúng vai người dùng chính hay không.
+- Một người kiểm, thấy sẵn nhãn nháp, đọc đoạn trích; quy tắc ranh giới chốt sau khi đã đọc data. Chưa có người thứ hai đối chiếu.
+- Nhiều dòng nằm ở ranh giới. Vd `14462135935` ("Tự trừ tiền", Money Lover) người kiểm giữ `khac`; đọc rộng quy tắc "trừ tiền bất ngờ" thì dòng này có thể tính.
+- `14827102118` ("Lược bỏ biểu đồ thu chi hàng tháng") đọc được hai cách: than bị bỏ hoặc đề nghị bỏ.
 
 → Kiểm lại bằng phỏng vấn (`evidence/interviews/`).

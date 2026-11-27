@@ -9,11 +9,12 @@ Sao kê giả lập tự sinh có seed (`data/transactions.csv`: 253 giao dịch
 
 ## 2. Bộ câu thử dựng ra sao
 
-- `eval/benchmark.csv` (bản nháp): 10 câu (thuong 1 · kho 5 · tu_choi 4, trong đó 2 câu tấn công: C09, C10)
-- Nguồn: nguoi_dung 0 · data_that 0 · tu_viet 9 · sinh_seed 1 → từ người dùng / data thật **0/10, chưa đạt ngưỡng ≥1/3**; cần thêm ≥5 câu từ ghi chép thật trước CP2
-- Độ phủ — các chiều đã xét: loại câu (tổng · theo nhóm · so sánh · liệt kê · từ chối) × cách nói thời gian (tháng cụ thể · không nói · tháng đang dở · tháng không có dữ liệu) × độ rõ dữ liệu (rõ · không đủ căn cứ · hoàn tiền) × rủi ro (đầu tư · giao dịch hộ · người khác · cài lệnh). Còn thiếu: hỏi theo nơi bán, khoảng ngày lẻ, câu mơ hồ cần hỏi lại, trừ trùng, OTP trong câu hỏi
-- Câu `kho` (C02, C04, C05, C06, C07) theo lớp chỗ khó (`spec.md` §5): lớp 1: C06 · lớp 2: C02, C05 · lớp 4: C04, C07. Lớp 3 do các câu `tu_choi` C03, C08, C09, C10 phủ (không thuộc `kho`)
-- Câu soạn sẵn, **chưa thuộc bộ**: `eval/benchmark-draft.csv` (C11–C17 `data_that` từ review; C18–C30 `tu_viet`). Người duyệt chọn mã rồi chạy `python eval/add_cases.py C11 …`: chỉ thêm vào cuối, từ chối nếu câu từ nguồn thật dưới 1/3. Câu hỏi do Claude viết; chưa câu nháp nào được chạy qua model thật.
+- `eval/benchmark.csv`: 21 câu (thuong 4 · kho 11 · tu_choi 6, trong đó 2 câu tấn công: C09, C10)
+- Nguồn: nguoi_dung 0 · data_that 7 (C11–C17) · tu_viet 13 · sinh_seed 1 → từ người dùng / data thật **7/21, đạt đúng ngưỡng ≥1/3**: thêm câu `tu_viet` hoặc `sinh_seed` mà không thêm câu nguồn thật sẽ tụt dưới ngưỡng. Câu `data_that` do Claude viết dựa trên review, không phải lời nguyên văn; số tiền và giao dịch lấy từ dữ liệu giả lập
+- Độ phủ — các chiều đã xét: loại câu (tổng · theo nhóm · so sánh · liệt kê · từ chối) × cách nói thời gian (tháng cụ thể · không nói · tháng đang dở · tháng không có dữ liệu) × độ rõ dữ liệu (rõ · không đủ căn cứ · hoàn tiền) × rủi ro (đầu tư · giao dịch hộ · người khác · cài lệnh). Đợt thêm 27/11 phủ: nơi bán (C25), khoảng ngày lẻ (C27), câu mơ hồ cần hỏi lại (C26), trừ trùng (C12), OTP trong câu hỏi (C30), xuất file và đòi hoàn phí (C15, C13)
+- Câu `kho` theo lớp chỗ khó (`spec.md` §5): lớp 1: C06, C27 · lớp 2: C02, C05, C14, C16, C26 · lớp 3, 4: C30 · lớp 4: C04, C07, C12. Lớp 3 còn do các câu `tu_choi` C03, C08, C09, C10, C13, C15 phủ (không thuộc `kho`)
+- Câu soạn sẵn còn **chưa thuộc bộ**: C18–C24, C28, C29 trong `eval/benchmark-draft.csv` (`tu_viet`). Người duyệt chọn mã rồi chạy `python eval/add_cases.py C18 …`: chỉ thêm vào cuối, từ chối nếu câu từ nguồn thật dưới 1/3. Câu hỏi do Claude viết; chưa câu nào trong đợt thêm được chạy qua model thật.
+- **Hạn chế của C11 và C17:** máy chỉ đòi dòng tổng chi. Các dòng theo nhóm không được đối chiếu, và hai câu vẫn qua phần đáp án khi model không gán được nhóm nào (một phần giao dịch đã được quy tắc trong code xếp sẵn). Hai câu này **không đo được khả năng gán nhóm của model**, kể cả C17 hỏi "tự xếp nhóm". Người rà đọc phần theo nhóm của hai output khi chấm.
 - Đáp án: `eval/oracle.json`, sinh bằng `python eval/oracle.py --json`. Người kiểm tay đáp án: [CHỜ DỮ LIỆU THẬT]
 
 ## 3. Metric và cách chấm
@@ -64,6 +65,11 @@ python run.py score eval/run-N.csv       # % đạt theo type
 | 2 | [CHỜ DỮ LIỆU THẬT] | | | | | |
 
 Lượt chạy lại vì lỗi kỹ thuật, lượt sau CP4: ghi thêm dòng, không sửa dòng cũ.
+
+**Lỗi đã biết, giữ nguyên cho lượt 1, sửa giữa lượt 1 và lượt 2** (quyết định 27/11/2026):
+
+- Bốn lỗi thấy khi chạy thử với model thật (`spec.md` §9).
+- Lời gọi gán nhóm (lần 2) trả rỗng hoặc bị chặn thì cả câu hỏi báo lỗi, không có câu trả lời; đúng ra nên trả lời với phần "Không rõ" (thấy khi thử bằng phản hồi giả; chưa đo tần suất với model thật). Câu bị như vậy hiện là lỗi kỹ thuật và `grade.py` in "chưa kết luận" cho lượt đó.
 
 ## 6. Lỗi chính
 

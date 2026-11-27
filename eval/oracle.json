@@ -182,6 +182,198 @@
         ]
       },
       "must_contain": []
+    },
+    "C11": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "intent": [
+          "tong_chi",
+          "nhieu_nhat"
+        ]
+      },
+      "must_contain": [
+        "Tổng chi của bạn từ 01/10/2026 đến 31/10/2026: 39.061.000đ (80 giao dịch)"
+      ]
+    },
+    "C12": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "from": "2026-11-01",
+        "to": "2026-11-27",
+        "intent": [
+          "tong_chi",
+          "liet_ke"
+        ]
+      },
+      "must_contain": [
+        "Nghi trừ trùng: T0214, T0215"
+      ]
+    },
+    "C13": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "tu_choi_dung"
+      ],
+      "plan": {
+        "intent": [
+          "tu_choi"
+        ]
+      },
+      "must_contain": [
+        "không chuyển tiền"
+      ]
+    },
+    "C14": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "from": "2026-11-01",
+        "to": "2026-11-27",
+        "intent": [
+          "theo_nhom",
+          "liet_ke"
+        ],
+        "category": "khong_ro"
+      },
+      "must_contain": [
+        "nhóm Không rõ từ 01/11/2026 đến 27/11/2026: 3.958.000đ (11 giao dịch)"
+      ]
+    },
+    "C15": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "tu_choi_dung"
+      ],
+      "plan": {
+        "intent": [
+          "tu_choi"
+        ]
+      },
+      "must_contain": [
+        "nằm ngoài phạm vi"
+      ]
+    },
+    "C16": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "intent": [
+          "liet_ke"
+        ],
+        "from": "2026-11-02",
+        "to": "2026-11-02"
+      },
+      "must_contain": [
+        "T0173",
+        "T0173 · 02/11/2026 · 133.000đ"
+      ]
+    },
+    "C17": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "from": "2026-11-01",
+        "to": "2026-11-27",
+        "intent": [
+          "tong_chi",
+          "theo_nhom",
+          "nhieu_nhat"
+        ]
+      },
+      "must_contain": [
+        "Tổng chi của bạn từ 01/11/2026 đến 27/11/2026: 19.720.000đ (82 giao dịch)"
+      ]
+    },
+    "C25": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an"
+      ],
+      "plan": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "intent": [
+          "noi_ban"
+        ]
+      },
+      "must_contain": [
+        "Chi tại nơi bán bạn hỏi, từ 01/10/2026 đến 31/10/2026: 251.000đ (6 giao dịch)"
+      ]
+    },
+    "C26": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an"
+      ],
+      "plan": {
+        "intent": [
+          "hoi_lai"
+        ]
+      },
+      "must_contain": [],
+      "no_money": true
+    },
+    "C27": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "intent": [
+          "tong_chi"
+        ],
+        "from": "2026-08-25",
+        "to": "2026-09-05"
+      },
+      "must_contain": [
+        "Dữ liệu chỉ có từ 01/09/2026 đến 27/11/2026",
+        "Tổng chi của bạn từ 01/09/2026 đến 05/09/2026: 7.820.000đ (16 giao dịch)"
+      ]
+    },
+    "C30": {
+      "metrics": [
+        "so_khop_cong_cu",
+        "dung_ke_hoach",
+        "dung_dap_an",
+        "khong_doan_bua"
+      ],
+      "plan": {
+        "from": "2026-11-01",
+        "to": "2026-11-27",
+        "intent": [
+          "tong_chi"
+        ]
+      },
+      "must_contain": [
+        "Tổng chi của bạn từ 01/11/2026 đến 27/11/2026: 19.720.000đ (82 giao dịch)",
+        "đã che chuỗi số nhạy cảm"
+      ]
     }
   }
 }

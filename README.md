@@ -126,7 +126,7 @@ Bộ chạy gửi **nguyên ô `input`** của câu thử vào `answer(text)`. D
 
 ## Dùng AI vào việc gì
 
-Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ câu thử nháp và tài liệu. Phần người kiểm lại: [CHỜ DỮ LIỆU THẬT]. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
+Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ câu thử nháp và tài liệu. Phần người đã kiểm: nhãn 150/150 review và cột `pass` của hai lượt đánh giá (trên bảng tóm tắt). Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
 
 ## File mẫu — điền ở bước nào
 
@@ -158,5 +158,5 @@ Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ c
 | 4 | Bản chạy thử làm trọn lát cắt | `codebase/` · lệnh ở mục "Lệnh" |
 | 5 | Định nghĩa "tốt" + bộ câu thử | `data/DATA_CARD.md` · `eval/` |
 | 6 | Mô phỏng chi phí khi dùng thật | `cost/` |
-| 7 | Slide + demo + video dự phòng | slide trong repo (PDF, PPTX, HTML…) hoặc link slide ở form CP4 · link video: [CHỜ DỮ LIỆU THẬT] |
+| 7 | Slide + demo + video dự phòng | slide: [`demo-slides.pdf`](demo-slides.pdf) (nguồn `slides/demo-slides.html`) · video 30 giây CP3: [xem](https://drive.google.com/file/d/1GKEfwtIe9O6vN3vAnnJKlDd0Vs5_Ic4z/view?usp=drive_link) · video dự phòng CP4: [CHỜ DỮ LIỆU THẬT: link video 60–90 giây] |
 | + | *Bonus:* người dùng thử | `validation/log.md` |

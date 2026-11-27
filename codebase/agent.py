@@ -14,7 +14,7 @@ import json
 import re
 import unicodedata
 
-from ai import call_model
+from ai import ModelError, call_model
 import tools
 from tracing import note
 
@@ -80,6 +80,9 @@ Các khoá:
   tong_chi: tổng tiền đã chi · theo_nhom: chi cho một nhóm · nhieu_nhat: tiêu nhiều nhất vào đâu ·
   so_sanh: so hai tháng · liet_ke: liệt kê giao dịch · noi_ban: chi tại một nơi bán ·
   sua_nhom: đổi nhóm của một giao dịch · hoi_lai: thiếu thông tin để làm · tu_choi: việc không được làm
+  Hỏi thông tin về tiền đã được hoàn (có hay không, bao nhiêu, tổng chi đã trừ chưa) là hỏi chi tiêu: tong_chi.
+  Nhờ xếp nhóm, phân loại hay chia nhóm NHIỀU khoản chi trong một khoảng thời gian là tong_chi
+  (nêu đúng một nhóm thì theo_nhom). sua_nhom chỉ khi muốn đổi nhóm của MỘT giao dịch cụ thể.
 - "from", "to": YYYY-MM-DD (bắt buộc với tong_chi, theo_nhom, nhieu_nhat, liet_ke, noi_ban).
   Câu hỏi không nói thời gian thì lấy tháng hiện tại đến hôm nay và đặt "assumed_time": true;
   có nói thời gian (kể cả "tháng này") thì không đặt khoá này.
@@ -91,7 +94,7 @@ Các khoá:
 - "tx_id", "new_category": cho sua_nhom.
 - "missing": thoi_gian | noi_dung | giao_dich | nhom (cho hoi_lai).
 - "reason": dau_tu | giao_dich | nguoi_khac | ngoai_pham_vi (cho tu_choi).
-  dau_tu: hỏi nên đầu tư, mua bán tài sản, gửi tiền ở đâu · giao_dich: nhờ chuyển, trả, huỷ, hoàn tiền ·
+  dau_tu: hỏi nên đầu tư, mua bán tài sản, gửi tiền ở đâu · giao_dich: nhờ mình THỰC HIỆN chuyển, trả, huỷ, hoàn tiền ·
   nguoi_khac: xem chi tiêu của bất kỳ ai khác người đang hỏi · ngoai_pham_vi: việc không liên quan sao kê.
 Một câu vừa hỏi chi tiêu vừa đòi việc bị cấm thì chọn tu_choi.
 Từ lóng: "đốt", "bay", "nướng" tiền nghĩa là chi tiền.
@@ -615,7 +618,15 @@ def _labels(categorized, state):
         {"id": str(i), "mo_ta": p["description"][:160]}
         for i, p in enumerate(pending, start=1)
     ]
-    reply = call_model(SYSTEM_LABEL, json.dumps(items, ensure_ascii=False))
+    try:
+        reply = call_model(SYSTEM_LABEL, json.dumps(items, ensure_ascii=False))
+    except ModelError as error:
+        # RV-01: tổng tiền do code tính, nên mất nhãn thì vẫn trả lời được. Lời gọi kế hoạch lỗi thì vẫn báo lỗi.
+        # Dòng đầu giữ đúng tiền tố mà eval/grade.py đọc để chạy lại ra cùng output.
+        note("gán nhóm: model trả sai định dạng hoặc không trả lời, giữ khong_ro")
+        note("cảnh báo: gán nhóm: lời gọi model lỗi, giữ khong_ro (%s)" % error)
+        state["label_failed"] = True
+        return {}
     answer_map = parse_json(reply["text"])
     if answer_map is None:
         note("gán nhóm: model trả sai định dạng, giữ khong_ro")

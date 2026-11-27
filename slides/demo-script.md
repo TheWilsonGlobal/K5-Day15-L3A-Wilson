@@ -62,7 +62,7 @@ Nhóm ít người hơn thì chia lại; mỗi người nói ít nhất một ph
 3. Sai thì nói thẳng: "Chỗ này model hiểu sai ý; số vẫn là số của khoảng và nhóm nó nêu."
 4. Không gõ lại câu khác cho tới khi được đồng ý.
 
-Câu đã biết là **dễ sai** (chưa sửa, xem `spec.md` §9): hỏi "theo từng nhóm" hay "bảng chi theo nhóm" · hỏi tiền cho một hãng cụ thể theo kiểu "đi xe …" · câu có OTP kèm câu hỏi · câu "tiêu nhiều nhất vào đâu" (nhóm có thể lệch vì gán nhãn).
+Câu đã biết là **dễ sai** (xem `spec.md` §9 và `eval/report.md` §4): số theo từng nhóm có thể đổi giữa các lần chạy (nhãn model không ổn định, vd nhà sách) · hỏi tiền cho một hãng cụ thể theo kiểu "đi xe …" · hỏi một giao dịch theo số tiền · câu "tiêu nhiều nhất vào đâu". Khi demo, đọc **tổng chi**; chỉ đọc số theo nhóm sau khi đã nhìn bảng dẫn chứng.
 
 ## 5. Hỏi đáp: ai cũng phải trả lời được
 

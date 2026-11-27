@@ -5,14 +5,14 @@
 
 | # | Trang | Số lấy từ | Trạng thái |
 |---|---|---|---|
-| 1 | Người dùng & pain | `evidence/summary.md` | Chờ x/n, x/N, trích dẫn |
-| 2 | Vì sao chọn bài này | `spec.md` §2 | Chờ p, f, t và lý do loại |
+| 1 | Người dùng & pain | `evidence/summary.md` | Có số review và trích dẫn; chưa có phỏng vấn |
+| 2 | Vì sao chọn bài này | `spec.md` §2 | Có số; p, f, t là tự ước tính |
 | 3 | Giải pháp | `spec.md` §4 | Xong |
 | 4 | Demo live | `eval/benchmark.csv` | Xong |
-| 5 | Đánh giá thế nào | `eval/README.md`, `eval/report.md` | Chờ lượt 1, 2 và cập nhật số câu |
-| 6 | Chi phí khi dùng thật | `cost/cost-estimate.md` | Chờ mô phỏng chính thức |
-| 7 | Kết luận | trang 1, 5, 6 | Chờ quyết định |
-| 8 | Nếu có thêm 1 tuần | `eval/report.md` mục 4 · `validation/log.md` | Bản nháp theo lỗi thấy khi chạy thử; cập nhật sau lượt 2 |
+| 5 | Đánh giá thế nào | `eval/README.md`, `eval/report.md` | Xong (lượt 1, 2) |
+| 6 | Chi phí khi dùng thật | `cost/cost-estimate.md` | Xong (`simulate-1`) |
+| 7 | Kết luận | trang 1, 5, 6 | Đề xuất ITERATE; nhóm chốt |
+| 8 | Nếu có thêm 1 tuần | `eval/report.md` mục 4 | Xong theo lỗi sau lượt 2; chưa có người dùng thử |
 
 Chỗ tô vàng `[CHỜ …]` phải thay hết trước khi nộp. Kiểm: tìm chữ `CHỜ` trong `demo-slides.html`.
 

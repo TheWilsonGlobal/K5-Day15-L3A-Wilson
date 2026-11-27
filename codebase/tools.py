@@ -66,6 +66,25 @@ _TRANSFER_WORDS = {
     "qua",
     "nhanh",
 }
+# Chữ chỉ nói "thanh toán một hoá đơn": không cho biết dịch vụ hay nơi bán.
+_BILL_WORDS = {
+    "thanh",
+    "toan",
+    "thanhtoan",
+    "tt",
+    "hoa",
+    "don",
+    "hoadon",
+    "hd",
+    "ma",
+    "so",
+}
+# Từ chỉ loại hình đứng đầu tên nơi bán; sao kê thường không ghi. Giữ dấu để «quần áo» không bị coi là «quán».
+_VENUE_PREFIX = re.compile(
+    r"^\s*(?:quán|quan|tiệm|tiem|cửa\s+hàng|cua\s+hang|nhà\s+hàng|nha\s+hang|shop)\s+",
+    re.IGNORECASE,
+)
+MIN_STRIPPED_KEY = 4  # phần tên còn lại ngắn hơn thì chỉ tìm theo tên đầy đủ
 
 
 def fold(text):
@@ -91,6 +110,18 @@ def is_empty_transfer(description):
     return all(
         t in _TRANSFER_WORDS or t.isdigit() or re.fullmatch(r"ft\d+", t) for t in tokens
     )
+
+
+def is_bare_bill_code(description):
+    """True khi mô tả chỉ gồm chữ thanh toán / hoá đơn và mã số, không nêu dịch vụ hay nơi bán."""
+    tokens = [t for t in re.split(r"[^a-z0-9]+", fold(description)) if t]
+    codes = [bool(re.fullmatch(r"(?:hd)?\d+", t)) for t in tokens]
+    if not all(code or t in _BILL_WORDS for t, code in zip(tokens, codes)):
+        return False
+    return any(t in ("hd", "hoadon") or re.fullmatch(r"hd\d+", t) for t in tokens) or {
+        "hoa",
+        "don",
+    } <= set(tokens)
 
 
 def _load():
@@ -141,7 +172,7 @@ def _classify(tx, model_labels, overrides):
     for pattern, category in MERCHANT_RULES.items():
         if pattern in key:
             return "chi", category, "quy_tac"
-    if is_empty_transfer(tx["description"]):
+    if is_empty_transfer(tx["description"]) or is_bare_bill_code(tx["description"]):
         return "chi", "khong_ro", "thieu_noi_dung"
     label = (model_labels or {}).get(description_key(tx["description"]))
     if label in CATEGORIES:
@@ -289,16 +320,29 @@ def compare_months(summary_a: dict, summary_b: dict, partial: bool = False) -> d
     }
 
 
+def _merchant_keys(keyword):
+    """Các khoá để so tên nơi bán: tên đầy đủ, và tên đã bỏ từ chỉ loại hình ở đầu («Quán …», «Tiệm …»)."""
+    full = compact(keyword)
+    rest = unicodedata.normalize("NFC", keyword or "")
+    while found := _VENUE_PREFIX.match(rest):
+        rest = rest[found.end() :]
+    keys = [full] if len(full) >= 3 else []
+    stripped = compact(rest)
+    if stripped != full and len(stripped) >= MIN_STRIPPED_KEY:
+        keys.append(stripped)
+    return keys
+
+
 @tool
 def find_merchant(categorized: list, keyword: str) -> dict:
-    """Khoản chi của một nơi bán, gộp các cách ghi (bỏ dấu, bỏ khoảng trắng và ký hiệu).
+    """Khoản chi của một nơi bán, gộp các cách ghi (bỏ dấu, khoảng trắng, ký hiệu và từ chỉ loại hình ở đầu).
     Input: giao dịch đã categorize, từ khoá (ít nhất 3 chữ cái hoặc số).
     Output: {"transactions", "n_tx", "total_vnd"}. Không tác động ra ngoài."""
-    key = compact(keyword)
+    keys = _merchant_keys(keyword)
     items = [
         t
         for t in categorized
-        if t["kind"] == "chi" and len(key) >= 3 and key in compact(t["description"])
+        if t["kind"] == "chi" and any(k in compact(t["description"]) for k in keys)
     ]
     return {
         "transactions": items,

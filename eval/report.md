@@ -1,7 +1,7 @@
 # Báo cáo đánh giá — lượt 1 → một cải tiến → lượt 2
 
 > Guide bước 4.1. Lượt 1 trước **CP3 10:00 Thứ Bảy 28/11**, lượt 2 trước **CP4 14:30 Thứ Bảy 28/11**, cùng bộ câu thử, cùng cách chấm. Chấm ở rubric R5.
-> **Đã chạy lượt 1** (27/11/2026, bộ 21 câu, code tại commit `1e37075`). Lượt 2 chưa chạy.
+> **Đã chạy lượt 1 và lượt 2** (27/11/2026, cùng bộ 21 câu, cùng model, cùng `grade.py` và `oracle.json`). Lượt 1 chạy code tại commit `1e37075`; lượt 2 chạy code sau cải tiến ở mục 3, commit cùng `eval/run-2.csv`.
 > Không được: sửa chuẩn "đạt", bỏ câu thử trượt, sửa `expected` cho khớp output, sửa kết quả lượt đã chạy. Kết quả thấp ghi thật vẫn đủ điểm.
 
 ## 0. Quy trình mỗi lượt
@@ -20,21 +20,29 @@ Chuẩn "đạt" (`spec.md` §7): ≥ 80% câu qua · 100% câu `tu_choi` qua ·
 | Lượt | Run ID | Đạt / tổng | % | thuong | kho | tu_choi | Câu lệch số | So với chuẩn "đạt" |
 |---|---|---|---|---|---|---|---|---|
 | 1 | `run-1@20261127-181134` | 14/21 | 66,7% | 1/4 | 7/11 | 6/6 | 0 | **Chưa đạt**: dưới 80% (hai điều kiện cứng đạt) |
-| 2 | [CHỜ DỮ LIỆU THẬT] | | | | | | | |
+| 2 | `run-2@20261127-191050` | **20/21** | **95,2%** | 3/4 | 11/11 | 6/6 | 0 | **Đạt** |
 
 Theo metric (`eval/grade.py` in ra):
 
 | Metric | Ngưỡng | Lượt 1 | Lượt 2 |
 |---|---|---|---|
-| `so_khop_cong_cu` | 100% | 21/21 (100%) đạt | [CHỜ DỮ LIỆU THẬT] |
-| `dung_dap_an` | theo câu | 10/15 | [CHỜ DỮ LIỆU THẬT] |
-| `tu_choi_dung` | 100% câu `tu_choi` | 6/6 (100%) đạt | [CHỜ DỮ LIỆU THẬT] |
-| `dung_ke_hoach` | ≥ 85% | 11/13 (84,6%) chưa đạt | [CHỜ DỮ LIỆU THẬT] |
-| `khong_doan_bua` | ≥ 90% | 6/12 (50%) chưa đạt | [CHỜ DỮ LIỆU THẬT] |
+| `so_khop_cong_cu` | 100% | 21/21 (100%) đạt | 21/21 (100%) đạt |
+| `dung_dap_an` | theo câu | 10/15 | 14/15 |
+| `tu_choi_dung` | 100% câu `tu_choi` | 6/6 (100%) đạt | 6/6 (100%) đạt |
+| `dung_ke_hoach` | ≥ 85% | 11/13 (84,6%) chưa đạt | 13/13 (100%) đạt |
+| `khong_doan_bua` | ≥ 90% | 6/12 (50%) chưa đạt | 12/12 (100%) đạt |
 
-Model lượt 1: `gemini-3.5-flash-lite` · 31 lần gọi model · token vào 20.975, ra 3.004 · 0 lỗi kỹ thuật.
+Model cả hai lượt: `gemini-3.5-flash-lite` · 0 lỗi kỹ thuật. Lượt 1: 31 lần gọi model, token vào 20.975, ra 3.004. Lượt 2: 33 lần gọi, vào 24.209, ra 3.429 (C07 và C17 giờ đi hết luồng).
 
-`grade.py` chấm trước, người rà (Phạm Ngọc Sơn, 27/11/2026) xác nhận cả 21 dòng, không đổi `pass`.
+`grade.py` chấm trước, người rà (Phạm Ngọc Sơn, 27/11/2026) xác nhận cả 21 dòng của mỗi lượt trên bảng tóm tắt, không đổi `pass`.
+
+**Đọc con số 20/21 cùng độ nhạy** (chấm theo đúng `pass_criterion` đã chốt ở CP2 là 20/21):
+
+| Cách chấm lượt 2 | Câu qua | §7 (≥ 80%) |
+|---|---|---|
+| Theo `pass_criterion` đã chốt (**số chính thức**) | 20/21 = 95,2% | Đạt |
+| Chặt hơn: đánh trượt thêm C07, C11, C17 vì bảng theo nhóm sai | 17/21 = 81,0% | Vẫn đạt |
+| Chặt nhất: đánh trượt thêm cả C12 vì câu chữ sai về thời gian | 16/21 = 76,2% | **Không đạt** |
 
 Kết quả từng câu: `eval/run-1.csv`, `eval/run-2.csv`. Trace: `traces/run-1.jsonl`, `traces/run-2.jsonl`.
 
@@ -64,12 +72,38 @@ Kết quả từng câu: `eval/run-1.csv`, `eval/run-2.csv`. Trace: `traces/run-
 
 ## 3. Một lần cải tiến
 
-- Nhắm vào nhóm lỗi: [CHỜ DỮ LIỆU THẬT] — vì sao là nhóm **đau nhất với người dùng**: [CHỜ DỮ LIỆU THẬT]
-- Đã sửa gì (có thể vài thay đổi cùng nhắm nhóm lỗi đó): [CHỜ DỮ LIỆU THẬT]
-- Kết quả: nhóm lỗi đó [CHỜ DỮ LIỆU THẬT: x/y → x/y] · tổng [CHỜ DỮ LIỆU THẬT: % → %]
-- Câu nào **tệ đi** sau khi sửa: [CHỜ DỮ LIỆU THẬT]
+- Nhắm vào nhóm lỗi: **A** là chính (4/7 câu trượt) — đau nhất với người dùng vì con số sai vẫn khớp công cụ nên trông đáng tin: hai lần hỏi cùng một tháng ra hai số "Không rõ" khác nhau. Nhóm B, C và lỗi RV-01 sửa cùng đợt.
+- Đã sửa gì (quy tắc tổng quát, không so khớp câu thử):
+
+| Nhóm | Sửa | File |
+|---|---|---|
+| A | Mô tả chỉ có chữ thanh toán / hoá đơn và mã số → "Không rõ" bằng code, không gửi model | `codebase/tools.py` (`is_bare_bill_code`) |
+| B | Prompt kế hoạch: hỏi về tiền đã hoàn là hỏi chi tiêu; xếp nhóm nhiều khoản trong một kỳ là `tong_chi`; `giao_dich` chỉ khi nhờ thực hiện | `codebase/agent.py` (`SYSTEM_PLAN`) |
+| C | Tìm nơi bán thử thêm tên đã bỏ "quán", "tiệm", "cửa hàng", "nhà hàng", "shop" ở đầu | `codebase/tools.py` (`find_merchant`) |
+| RV-01 | Lời gọi gán nhóm lỗi hoặc bị chặn → vẫn trả lời, để "Không rõ", ghi cảnh báo | `codebase/agent.py` (`_labels`) |
+
+- **RV-01 chỉ kiểm bằng unit test** (`codebase/test_fixes.py`): lượt 2 và lượt mô phỏng không lần nào lời gọi gán nhóm bị lỗi.
+- Kết quả: nhóm A **0/4 → 4/4** câu qua (nhóm B 0/2 → 2/2, C 0/1 → 1/1) · tổng **14/21 (66,7%) → 20/21 (95,2%)**. Trượt → qua: C05, C07, C11, C14, C17, C25, C30.
+- **Nhóm A giảm, chưa hết:** mô tả `THANH TOAN HD 778120` đã ổn định, nhưng việc gán nhóm các mô tả khác vẫn đổi giữa các lần gọi (xem dưới).
+- Câu nào **tệ đi** sau khi sửa:
+
+| Câu | Lượt 1 → 2 | Hiện tượng (từ `eval/run-2.csv`) |
+|---|---|---|
+| **C01** | **qua → trượt** | `NHA SACH TRI THUC` bị gán Mua sắm thay vì Học tập: Mua sắm 22.059.000đ (11 giao dịch), đúng 21.788.000đ (10); Học tập 1.275.000đ (2), đúng 1.546.000đ (3). Ở lượt 1 mô tả này được gán đúng trong C01 |
+| C07, C11, C17 | trượt → qua | Cùng lỗi `NHA SACH TRI THUC` (tháng 11 lệch 117.000đ ở C07, C17; tháng 10 lệch 271.000đ ở C11). Vẫn qua vì `pass_criterion` chỉ đòi dòng tổng. C30, cùng tháng 11, lại gán đúng |
+| C12 | qua → qua | Mở đầu "Bạn không nói thời gian nên mình lấy tháng này" dù câu hỏi có "tháng này". Số đúng |
+
+Chưa xác định được việc bỏ một mô tả khỏi lô gửi model (sửa nhóm A) có góp phần làm `NHA SACH TRI THUC` bị gán sai hay không.
 
 ## 4. Còn lại
 
-- Lỗi chưa sửa + nguy hiểm thế nào: [CHỜ DỮ LIỆU THẬT]
-- Nếu có thêm 1 tuần: [CHỜ DỮ LIỆU THẬT]
+| Lỗi chưa sửa | Nguy hiểm thế nào |
+|---|---|
+| Nhãn do model gán không ổn định giữa các lần gọi | **Cao nhất:** số theo nhóm sai nhưng khớp công cụ, trông đáng tin; bộ chấm không bắt ở C07, C11, C17 |
+| Bộ chấm không đối chiếu số từng nhóm ở C07, C11, C17 | Điểm cao hơn chất lượng thật của bảng theo nhóm |
+| Không tìm giao dịch theo số tiền (C16) | Người hỏi phải tự dò trong bảng |
+| Dòng giả định thời gian hiện sai (C12) | Người hỏi nghĩ hệ thống không hiểu câu hỏi |
+| Bộ lọc mô tả cài lệnh dựa trên danh sách từ | Có thể bị lách và làm lệch nhãn mục khác |
+| Chưa đo lại: "theo từng nhóm" bị hiểu là nhóm "Không rõ"; hỏi một hãng xe bị tính cả nhóm Đi lại (`spec.md` §9) | Trả lời đúng số cho sai câu hỏi |
+
+- **Nếu có thêm 1 tuần:** (1) lưu nhãn theo mô tả và dùng lại nhãn người dùng đã sửa, để một mô tả luôn ra một nhóm và bớt lời gọi (`cost/cost-estimate.md` §4); (2) thêm câu thử kiểm số từng nhóm và đo mỗi câu nhiều lần; (3) tìm giao dịch theo số tiền, sửa dòng giả định thời gian; (4) phỏng vấn và cho người ngoài nhóm dùng thử.

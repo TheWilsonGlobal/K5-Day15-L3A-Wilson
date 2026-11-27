@@ -86,7 +86,7 @@ flowchart TD
   V -- hỏi chi tiêu --> D{get_data_range: có dữ liệu?}
   D -- không --> N[Nói không có dữ liệu + khoảng đang có]
   D -- có --> G[get_transactions: chỉ người đang đăng nhập]
-  G --> C[categorize: quy tắc trong code<br/>chuyển khoản không nội dung thành Không rõ]
+  G --> C[categorize: quy tắc trong code<br/>chuyển khoản không nội dung, mã hoá đơn trơ thành Không rõ]
   C --> M{Còn mô tả chưa gán?}
   M -- có --> F2{Code lọc: mô tả đáng ngờ?<br/>quá dài hoặc có từ ra lệnh}
   F2 -- có --> K[Không gửi model, giữ Không rõ]
@@ -110,7 +110,7 @@ flowchart TD
   | `categorize` | danh sách giao dịch, nhãn của model | giao dịch kèm loại, nhóm chi, căn cứ (quy tắc / model / thiếu nội dung) | Không |
   | `sum_by_category` | giao dịch đã gán | tổng, từng nhóm, phần Không rõ, hoàn tiền, khoản lớn, nghi trùng | Không |
   | `compare_months` | hai bảng tổng | chênh lệch tiền và phần trăm | Không |
-  | `find_merchant` | giao dịch, từ khoá | khoản chi của nơi bán, gộp các cách ghi | Không |
+  | `find_merchant` | giao dịch, từ khoá | khoản chi của nơi bán, gộp các cách ghi; bỏ từ chỉ loại hình ở đầu tên ("quán", "tiệm"…) | Không |
   | `propose_recategorize` | mã giao dịch, nhóm mới | **bản nháp** | Không; chỉ `app.py` ghi file cục bộ sau khi người dùng xác nhận |
 
 - **Mức tự động:** [ ] AI gợi ý, người quyết · [x] AI tự làm khi chắc, chuyển người khi không · [ ] AI tự làm. Đọc và tính thì sai dễ thấy nhờ bảng dẫn chứng và sửa được, nên làm tự động; không đủ căn cứ thì để "Không rõ" hoặc hỏi lại. Đổi dữ liệu thì người quyết.
@@ -128,6 +128,8 @@ flowchart TD
 - **Giới hạn đã biết:**
   - Việc từ chối phụ thuộc model xếp đúng ý định ở lần gọi 1. Model xếp sai thì hệ thống vẫn không thể khuyên đầu tư, giao dịch hay đọc dữ liệu người khác, nhưng người dùng nhận câu trả lời lạc đề thay vì lời từ chối.
   - Bộ lọc mô tả đáng ngờ (dài hơn 80 ký tự, có ký hiệu cấu trúc, hoặc có từ như `ignore`, `system`, `bỏ qua`, `gán thành`) dựa trên danh sách từ nên **có thể bị lách** bằng cách viết khác; mô tả lọt lưới vẫn đi chung lô và có thể làm lệch nhãn mục khác. Mô tả bình thường bị lọc nhầm sẽ nằm ở "Không rõ".
+  - Nhãn model gán cho mô tả lạ **không ổn định giữa các lần gọi**, nên số theo nhóm của cùng một kỳ có thể khác nhau (`eval/report.md` §3).
+  - Lời gọi gán nhóm lỗi thì vẫn trả lời, mô tả lạ nằm ở "Không rõ"; lời gọi đầu lỗi thì báo lỗi.
   - Ngày "hôm nay" cố định 27/11/2026; một người dùng; không nhớ câu trước.
 - **Phần nào còn giả:** dữ liệu giao dịch là synthetic; ngày "hôm nay" cố định; một người dùng. Lời gọi model là thật (`gemini-3.5-flash-lite`, đã thử ngày 27/11/2026); máy không có `.env` thì chạy chế độ giả, câu trả lời mang thẻ `[GIẢ]`.
 
@@ -166,7 +168,7 @@ Hành vi của bản chạy thử (câu trả lời dựng từ mẫu trong `cod
 | Bị đòi ngoài phạm vi (lớp 3) | Xin tư vấn đầu tư, nhờ chuyển tiền, xem của người khác | Từ chối bằng câu viết sẵn, nêu việc làm được; không gọi công cụ | Tự làm trong app ngân hàng hoặc ví, hoặc hỏi về chi tiêu của mình |
 | Đặc thù lĩnh vực (lớp 4) | So tháng đang dở; có khoản trừ hai lần, hoàn tiền; gửi OTP | So cùng kỳ trước; nêu cặp nghi trùng; hoàn tiền không trừ; che chuỗi nhạy cảm và nhắc đừng gửi | Kiểm lại với ngân hàng |
 
-Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi model lỗi, người dùng thấy thông báo chặn hoặc lỗi, không thấy con số.
+Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi hiểu câu hỏi lỗi, người dùng thấy thông báo chặn hoặc lỗi, không thấy con số. Riêng lời gọi gán nhóm lỗi: vẫn trả lời, mô tả lạ để "Không rõ" và nói rõ.
 
 ## §7. Đánh giá & chuẩn "đạt" *(guide 2.4, 4.1)*
 - Data card: `data/DATA_CARD.md` · bộ câu thử: `eval/benchmark.csv` — 21 câu (thuong 4 · kho 11 · tu_choi 6); nguồn: data_that 7 (câu viết dựa trên review) · tu_viet 13 · sinh_seed 1; chưa có câu từ người dùng · metric: `eval/metric_spec.yaml` (5 metric)
@@ -183,18 +185,18 @@ Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi mod
 - **Quy ước đáp án:** (a) câu hỏi không nói thời gian → lấy tháng hiện tại (11/2026, đến ngày 27) và nói rõ; (b) hoàn tiền **không** trừ vào tổng chi, được nêu riêng; (c) tháng đang dở (01–27/11/2026) → so cùng kỳ tháng trước (01–27/10/2026), đánh dấu `partial`, rồi mới nêu số đang có.
 - Cách chấm: `python eval/grade.py eval/run-N.csv` (chỉ điền `pass`, `ghi_chu`), người rà lại từng dòng.
 - Kết quả **lượt 1**: **14/21 (66,7%)** câu qua · thuong 1/4 · kho 7/11 · tu_choi 6/6 · `so_khop_cong_cu` 21/21 · 0 lỗi kỹ thuật → **chưa đạt chuẩn** (thiếu ngưỡng 80%) · run ID `run-1@20261127-181134` · model `gemini-3.5-flash-lite` · người rà xác nhận 27/11/2026
-- Kết quả lượt 2: [CHỜ DỮ LIỆU THẬT: chưa chạy] → chi tiết `eval/report.md`, hồ sơ `eval/README.md`
+- Kết quả **lượt 2**: **20/21 (95,2%)** câu qua · thuong 3/4 · kho 11/11 · tu_choi 6/6 · `so_khop_cong_cu` 21/21 · 0 lỗi kỹ thuật → **đạt chuẩn** · run ID `run-2@20261127-191050` · cùng model, cùng 21 câu · người rà xác nhận 27/11/2026. Hạn chế: C01 từ qua thành trượt; chấm chặt hơn (trượt cả C07, C11, C17 vì bảng nhóm sai) còn 17/21 = 81,0%, trượt thêm C12 thì 16/21 = 76,2% (không đạt) → chi tiết `eval/report.md`, hồ sơ `eval/README.md`
 
 ## §8. Chi phí khi dùng thật *(guide 4.2)*
 
-- Persona + giá: `cost/personas.yaml` (3 persona, giá 2 model) · lượt mô phỏng chính thức: [CHỜ DỮ LIỆU THẬT: `cost/simulate-N.csv`, chạy sau lượt 2]
+- Persona + giá: `cost/personas.yaml` (3 persona, giá 2 model) · lượt mô phỏng: `simulate-1@20261127-201002`, 50 phiên, 88 lượt hỏi, seed 42, 0 phiên lỗi (`cost/simulate-1.csv`)
 - **Công thức:**
   - chi phí / phiên = (token vào × giá vào + token ra × giá ra) ÷ 1.000.000, trung bình trên các phiên mô phỏng
   - chi phí / task thành công = chi phí / phiên ÷ tỉ lệ đạt của lượt 2 (cùng model)
   - chi phí / tháng = Σ persona (số người dùng × tỉ lệ persona × số phiên / người / tháng × chi phí / phiên của persona)
-- Chi phí / task thành công: [CHỜ DỮ LIỆU THẬT] (gemini-3.5-flash-lite) · [CHỜ DỮ LIỆU THẬT] (gemini-3.8-flash)
-- Chi phí / tháng: thấp [CHỜ DỮ LIỆU THẬT] · cơ sở [CHỜ DỮ LIỆU THẬT] · cao [CHỜ DỮ LIỆU THẬT] → chi tiết `cost/cost-estimate.md`
-- So với impact / người / tháng (§2): [CHỜ DỮ LIỆU THẬT: một dòng đáng làm hay không, vì sao]
+- Chi phí / task thành công (tỉ lệ đạt 20/21): **$0,0018** (`gemini-3.5-flash-lite`, token đo thật) · **$0,0070** (`gemini-3.8-flash`, cùng token, chỉ đổi giá)
+- Chi phí / tháng (flash-lite · 3.8-flash): thấp 3.000 người **$16,95 · $64,73** · cơ sở 30.000 **$169,55 · $647,33** · cao 300.000 **$1.695,50 · $6.473,29** → chi tiết `cost/cost-estimate.md`
+- So với impact (§2): ở kịch bản cơ sở, $169,55 ÷ 44.000 phút = **$0,0039 cho mỗi phút tiết kiệm** (≈ $0,23/giờ) với flash-lite, $0,0147 (≈ $0,88/giờ) với 3.8-flash → chi phí model đáng làm **nếu** một phút của người dùng đáng hơn mức đó và impact *(tự ước tính)* đúng; chưa tính chi phí ngoài model.
 
 ## §9. Rủi ro & an toàn
 
@@ -204,16 +206,16 @@ Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi mod
 | Nếu AI sai | Ai bị hại | Đang chặn bằng gì | Còn hở |
 |---|---|---|---|
 | Hiểu sai câu hỏi (kỳ, nhóm, nơi bán) | Người hỏi đọc nhầm số của việc khác | Câu trả lời nêu rõ khoảng thời gian và nhóm; bảng dẫn chứng | Số vẫn đúng công cụ nên trông đáng tin |
-| Gán sai nhóm cho mô tả mơ hồ | Người hỏi hiểu sai mình tiêu vào đâu | Lựa chọn "Không rõ"; quy tắc trong code; sửa được | Model vẫn có thể đoán |
+| Gán sai nhóm cho mô tả mơ hồ | Người hỏi hiểu sai mình tiêu vào đâu | Lựa chọn "Không rõ"; quy tắc trong code; sửa được | Model vẫn đoán sai và không ổn định (lượt 2: `NHA SACH TRI THUC` thành Mua sắm) |
 | Mô tả giao dịch cài lệnh | Nhãn của các giao dịch khác bị lái | Tách mô tả đáng ngờ khỏi lời gọi chung; đầu ra ép vào danh sách nhóm | Bộ lọc theo danh sách từ, lách được |
 | Không nhận ra yêu cầu cấm | Người hỏi không nhận được lời từ chối | Không tồn tại công cụ giao dịch; mã người dùng cố định | Câu trả lời lạc đề |
 | Con số lệch | Người hỏi quyết định chi tiêu sai | Code tính; `verify_numbers` chặn số lạ | Không chặn được số đúng của câu hỏi sai |
 
-- **Lỗi đã thấy khi chạy thử với model thật ngày 27/11/2026** (chạy tay, chưa phải lượt đánh giá, chưa sửa):
-  1. Xếp mô tả mã hoá đơn chung chung (`THANH TOAN HD 778120`) vào Hoá đơn thay vì "Không rõ"; nhãn có thể khác nhau giữa hai lần hỏi.
-  2. Câu "bảng chi theo nhóm", "theo từng nhóm" bị hiểu là hỏi riêng nhóm "Không rõ".
-  3. Hỏi tiền đi một hãng xe cụ thể bị tính cho cả nhóm Đi lại.
-  4. Câu vừa gửi OTP vừa hỏi chi tiêu bị từ chối là ngoài phạm vi.
+- **Lỗi đã thấy khi chạy thử với model thật ngày 27/11/2026** (chạy tay trước lượt 1) và trạng thái sau lượt 2:
+  1. Xếp mô tả mã hoá đơn chung chung (`THANH TOAN HD 778120`) vào Hoá đơn; nhãn khác nhau giữa hai lần hỏi. → **Đã sửa** cho mô tả mã hoá đơn trơ; mô tả khác vẫn có thể bị gán không ổn định.
+  2. Câu "bảng chi theo nhóm", "theo từng nhóm" bị hiểu là hỏi riêng nhóm "Không rõ". → Prompt đã nói rõ hơn về việc xếp nhóm cả kỳ; **chưa đo lại** hai cách hỏi này.
+  3. Hỏi tiền đi một hãng xe cụ thể bị tính cho cả nhóm Đi lại. → **Chưa sửa, chưa đo lại.**
+  4. Câu vừa gửi OTP vừa hỏi chi tiêu bị từ chối là ngoài phạm vi. → Câu C30 trả lời đúng ý ở cả hai lượt; cách viết khác chưa đo.
 
 ## §10. Phân công & changelog
 
@@ -226,6 +228,8 @@ Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi mod
 | Thời điểm | Đổi gì | Vì sao (trỏ về câu thử / lỗi / bằng chứng nào) |
 |---|---|---|
 | 27/11 tối, sau lượt 1 | Điền §0–§2 (số từ 11/150 review và ước tính có ghi rõ); sửa tiêu đề thành Zone 4; thêm kết quả lượt 1 vào §7. Không đổi chuẩn "đạt", metric, câu thử, code | Chuẩn bị CP3; `evidence/summary.md`, `eval/run-1.csv` |
+| 27/11 19:10, trước lượt 2 | Code: mã hoá đơn trơ → "Không rõ"; prompt kế hoạch (hoàn tiền, xếp nhóm cả kỳ); bỏ từ chỉ loại hình khi tìm nơi bán; lời gọi gán nhóm lỗi vẫn trả lời. Cập nhật §4, §6, §9 theo hành vi mới | Lỗi lượt 1: C05, C11, C14, C30 · C07, C17 · C25 · RV-01 (`eval/report.md` §2–§3). 14/21 → 20/21, C01 tụt |
+| 27/11 20:10 → 28/11 | Mô phỏng 50 phiên; điền §7 lượt 2, §8; slide và tài liệu CP4. Không đổi chuẩn "đạt", metric, câu thử | `cost/simulate-1.csv`, `eval/run-2.csv` |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 

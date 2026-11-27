@@ -18,6 +18,7 @@ python run.py score eval/run-N.csv
 python -m unittest discover -s codebase -p "test_*.py"
 python run.py simulate --try     # thử mô phỏng chi phí 10 phiên
 python run.py simulate           # mô phỏng chi phí → cost/simulate-N.csv
+python evidence/count.py         # đếm bằng chứng đã nhập
 ```
 
 Khung chỉ dùng thư viện chuẩn của Python. Thêm thư viện thì ghi vào `requirements.txt`.
@@ -61,5 +62,6 @@ Khung chỉ dùng thư viện chuẩn của Python. Thêm thư viện thì ghi v
 
 - Không đọc, in, log hay dán giá trị trong `.env`; `.env.example` chỉ có tên biến, giá trị trống.
 - Key đi trong header, không trong URL; thông báo lỗi phải xoá key trước khi ném ra (lỗi được ghi vào file sẽ commit).
+- Chỗ cần dữ liệu từ người ghi `[CHỜ DỮ LIỆU THẬT: …]`; agent không tự điền.
 - Chỉ dùng dữ liệu giả lập: không đưa sao kê thật, tên, số điện thoại, số tài khoản thật vào repo hay vào model.
 - Test không gọi mạng (`MODEL_PROVIDER=fake`).

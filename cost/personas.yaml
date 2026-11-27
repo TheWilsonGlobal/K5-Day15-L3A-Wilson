@@ -1,52 +1,63 @@
-# Mô phỏng chi phí khi dùng thật — điền ở guide bước 4.2.
-# Ôn lại: ngày 13, ngày 1, ngày 14 · lab ngày 13, lab ngày 14.
-# Mọi số phải có nguồn (data / phỏng vấn / khảo sát / quy mô khoá có nguồn) hoặc ghi rõ "(tự ước tính)".
-# Chạy: python run.py simulate --try   (10 phiên, kiểm khung — làm trước CP3)
+# Mô phỏng chi phí khi dùng thật (guide bước 4.2).
+# Chạy: python run.py simulate --try   (10 phiên, kiểm khung)
 #       python run.py simulate         (đủ số phiên dưới đây — bản nộp CP4)
-# Thay mọi dòng "(ví dụ)" bằng số và nguồn của nhóm; simulate nhắc nếu còn sót.
+# Số lần dùng và số người dùng hiện là TỰ ƯỚC TÍNH. Khi có phỏng vấn: thay uses_per_month theo câu
+# "mấy lần trong 1 tháng qua" (python evidence/count.py), sửa source, rồi mới chạy lượt mô phỏng chính thức.
 
-sessions: 50        # số phiên mô phỏng — bản nộp ≥50
-seed: 42            # giữ cố định để chạy lại ra cùng chuỗi phiên
+sessions: 50
+seed: 42
 
-users:              # số người dùng thật nếu đưa vào dùng — 3 kịch bản, ở quy mô thật của sản phẩm
-                    # track A: khoá học · track B–F: người dùng của sản phẩm / nhóm nhắm tới, nguồn công khai có link
-  low: 300
-  base: 700
-  high: 1000
-  source: "(ví dụ) track A — thay bằng số của nhóm. Cơ sở: lớp L3 hơn 700 học viên (README hackathon); thấp, cao: (tự ước tính)"
+users:
+  low: 3000
+  base: 30000
+  high: 300000
+  source: "Mốc: MoMo phục vụ hơn 30 triệu người dùng (Báo Đại biểu Nhân dân, 28/11/2025, xem 27/11/2026: https://daibieunhandan.vn/momo-ky-niem-15-nam-nguoi-khong-lo-fintech-viet-nam-dat-30-trieu-nguoi-dung-cong-nghe-ai-lam-chu-loi-van-hanh-10397472.html). Tỉ lệ dùng tính năng 0,01% / 0,1% / 1% là (tự ước tính)"
 
-personas:           # ≥3 kiểu người dùng; share cộng lại = 1
-  - name: dung_it
-    share: 0.5              # tỉ lệ người dùng kiểu này
-    uses_per_month: 4       # số phiên / người / tháng
-    turns_per_session: 1    # số lượt hỏi trong một phiên
-    source: "(ví dụ) phỏng vấn P1, P3 — thay bằng nguồn của nhóm"
-  - name: dung_vua
-    share: 0.3
-    uses_per_month: 10
+personas:
+  - name: xem_cuoi_thang
+    share: 0.5
+    uses_per_month: 2
+    turns_per_session: 1
+    source: "(tự ước tính) · chờ số từ phỏng vấn"
+    inputs:
+      - "Tháng này mình tiêu tổng cộng bao nhiêu?"
+      - "Tháng trước tiền của mình đi đâu nhiều nhất?"
+      - "Cuối tháng rồi, cho mình bảng chi theo nhóm"
+
+  - name: theo_doi_hang_tuan
+    share: 0.35
+    uses_per_month: 5
+    turns_per_session: 2
+    source: "(tự ước tính) · chờ số từ phỏng vấn"
+    inputs:
+      - "Tuần này mình chi cho ăn uống hết bao nhiêu?"
+      - "Tuần trước mình tiêu những gì?"
+      - "Tháng này mình đổ xăng, đi xe hết bao nhiêu?"
+      - "Mình mua ở shopvui tháng này hết bao nhiêu?"
+      - "Liệt kê khoản chưa rõ nhóm từ đầu tháng đến nay"
+
+  - name: so_sanh_nhieu_thang
+    share: 0.15
+    uses_per_month: 3
     turns_per_session: 3
-    source: "(ví dụ) khảo sát n = 24, câu 3"
-  - name: dung_nhieu
-    share: 0.2
-    uses_per_month: 20
-    turns_per_session: 5
-    source: "(ví dụ) data/preclass: đếm số lượt / người — cách đếm ở evidence/data-mining.md"
-# Mỗi lượt hỏi lấy ngẫu nhiên một đầu vào trong eval/benchmark.csv (type thuong và kho).
-# Persona hỏi kiểu riêng: thêm vào persona đó
-#     types: [thuong, kho, tu_choi]
-# hoặc
-#     inputs: ["câu hỏi kiểu 1", "câu hỏi kiểu 2"]
+    source: "(tự ước tính) · chờ số từ phỏng vấn"
+    inputs:
+      - "So tiền ăn uống tháng 9 với tháng 10 giúp mình"
+      - "Tháng 10 so với tháng 9 thì mình chi hơn hay kém?"
+      - "Từ đầu tháng 9 đến nay mình tiêu bao nhiêu, theo từng nhóm?"
+      - "Chi mua sắm từ tháng 9 đến giờ là bao nhiêu?"
+      - "Từ tháng 9 đến nay mình đi xe máu hết bao nhiêu tiền?"
 
-prices:             # USD / 1 triệu token — chép từ further-reading/model-prices.md của repo đề. ≥2 mức model
-  - model: gemini-3.1-flash-lite
-    input: 0.25
-    output: 1.50
-    source: "(ví dụ) https://ai.google.dev/gemini-api/docs/pricing · xem 25/11/2026"
-  - model: gemini-4-hydrogen
+prices:
+  - model: gemini-3.5-flash-lite
+    input: 0.30
+    output: 2.50
+    source: "https://ai.google.dev/gemini-api/docs/pricing · BTC tra 25/11/2026 (further-reading/model-prices.md)"
+  - model: gemini-3.8-flash
     input: 1.50
     output: 7.50
-    source: "(ví dụ) https://ai.google.dev/gemini-api/docs/pricing · xem 25/11/2026"
+    source: "https://ai.google.dev/gemini-api/docs/pricing · BTC tra 25/11/2026 (further-reading/model-prices.md) · giá từ 01/01/2027"
 
-usd_to_vnd:         # tuỳ chọn: điền thì bản tóm tắt in thêm tiền Việt
+usd_to_vnd:
   rate:
   source:

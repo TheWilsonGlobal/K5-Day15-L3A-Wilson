@@ -20,10 +20,15 @@
 
 ## Số nghe được (không nhớ thì ghi "không nhớ")
 
+> `evidence/count.py` đọc đúng tên các dòng dưới đây: giữ nguyên phần trước dấu hai chấm.
+> **Gặp pain** ghi một trong: `co` · `khong` · `mot phan` ("co" = kể được một lần cụ thể trong 1 tháng qua).
+
+- Gặp pain: __
 - Lần gần nhất: __
-- Số lần trong 1 tháng qua: __
-- Lần đó mất: __ phút
-- Đang xoay xở bằng: __ · vì sao chưa bỏ cách đó: __
+- Số lần / 1 tháng qua: __
+- Số phút lần gần nhất: __
+- Đang xoay xở bằng: __
+- Vì sao chưa bỏ cách đó: __
 
 ## Trích nguyên văn (1–2 câu)
 

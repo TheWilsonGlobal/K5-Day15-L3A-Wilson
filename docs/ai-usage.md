@@ -1,18 +1,25 @@
 # Khai báo dùng AI
 
-README của nhóm có mục "Dùng AI vào việc gì" (2–3 dòng, bắt buộc). Ghi chi tiết vào bảng dưới đây.
+README có mục "Dùng AI vào việc gì" (bản tóm tắt). Chi tiết ở đây.
 
 > Luật của đề: dùng AI để làm bài thoải mái, nhưng **ai không giải thích được phần có tên mình thì phần đó nhận 0 điểm**. Khai thiếu không bị trừ; giấu mới bị.
 
-| Việc | Công cụ AI | AI làm gì | Người kiểm/sửa gì | Ai phụ trách |
-|---|---|---|---|---|
-| Code bản chạy thử | | | | |
-| Prompt / thiết kế lời gọi mô hình | | | | |
-| Đào data (viết script đếm, gợi ý nhãn) | | | Kiểm tay __ dòng, khớp __ | |
-| Rà câu hỏi phỏng vấn / khảo sát | | Chỉ rà câu dẫn dắt | | |
-| Viết câu thử (benchmark) | | | Mỗi câu thử có `source`; câu thử AI viết được ghi rõ | |
-| Sinh data `synthetic` (nếu có) | | | Seed __ · kiểm tay __ dòng | |
-| Chấm cột `pass` bằng LLM (nếu có) | | | Kiểm tra thủ công __ câu thử, khớp __/__ | |
-| Slide, văn bản | | | | |
+**Công cụ:** Claude Code (trợ lý viết code của Anthropic) để soạn · `gemini-3.5-flash-lite` là model trong bản chạy thử · Groq (một model Qwen) chỉ dùng gọi thử nhánh kết nối thứ hai.
+Cập nhật lần cuối: Thứ Sáu 27/11/2026. Việc làm thêm sau đó: bổ sung dòng.
 
-**Không dùng AI để:** tạo người được phỏng vấn, trích dẫn, câu trả lời khảo sát; sửa kết quả các lượt đã chạy (`eval/run-*.csv`, `cost/simulate-*.csv`, `traces/`).
+| Việc | Công cụ AI | AI làm gì | Người kiểm / sửa gì | Ai phụ trách |
+|---|---|---|---|---|
+| Kế hoạch thực thi | Claude Code | Đọc đề và rubric, soạn kế hoạch theo mốc | Đã duyệt kế hoạch và chốt quy ước đáp án; [CHỜ DỮ LIỆU THẬT: sửa gì thêm] | Phạm Ngọc Sơn |
+| Code bản chạy thử (`codebase/`) | Claude Code | Viết công cụ, luồng, nối model, giao diện dòng lệnh, test | [CHỜ DỮ LIỆU THẬT: đã đọc file nào, sửa gì] | [CHỜ DỮ LIỆU THẬT] |
+| Prompt và thiết kế lời gọi model | Claude Code | Viết hai prompt, danh sách giá trị cho phép, bộ lọc mô tả đáng ngờ, bước kiểm số | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] |
+| Dữ liệu `synthetic` (`data/`) | Claude Code | Viết bộ sinh và nhãn thật, seed `20261127` | [CHỜ DỮ LIỆU THẬT: kiểm tay ≥30 dòng, khớp x/30] | [CHỜ DỮ LIỆU THẬT] |
+| Câu thử (`eval/benchmark.csv`) | Claude Code | Soạn 10 câu nháp: 9 `tu_viet`, 1 `sinh_seed` | [CHỜ DỮ LIỆU THẬT: duyệt câu và đáp án; thêm câu từ nguồn thật] | [CHỜ DỮ LIỆU THẬT] |
+| Đáp án và bộ chấm | Claude Code | Viết `oracle.py`, `grade.py`, `metric_spec.yaml` theo phương án đã chốt | [CHỜ DỮ LIỆU THẬT: chấm chéo 5 output, khớp x/5] | [CHỜ DỮ LIỆU THẬT] |
+| Chấm cột `pass` | Không dùng LLM chấm | `grade.py` chấm bằng code | [CHỜ DỮ LIỆU THẬT: người rà mỗi lượt] | [CHỜ DỮ LIỆU THẬT] |
+| Bằng chứng | Claude Code | Soạn giả thuyết nháp, cách lấy mẫu, kịch bản phỏng vấn, script đếm. **Không** tạo người, trích dẫn hay số liệu | [CHỜ DỮ LIỆU THẬT: xác nhận giả thuyết viết trước khi hỏi; sửa gì trong kịch bản] | [CHỜ DỮ LIỆU THẬT] |
+| Tra nguồn công khai | Claude Code (tìm web) | Tìm trang sản phẩm tương tự và nguồn số người dùng | [CHỜ DỮ LIỆU THẬT: mở từng link, dùng thử sản phẩm] | [CHỜ DỮ LIỆU THẬT] |
+| Chi phí | Claude Code | Soạn persona *(tự ước tính)*, chép giá từ bảng của BTC | [CHỜ DỮ LIỆU THẬT: sửa số theo phỏng vấn] | [CHỜ DỮ LIỆU THẬT] |
+| Slide, kịch bản, tài liệu | Claude Code | Soạn `spec.md`, slide, kịch bản demo, khung báo cáo, README | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] |
+| Reflection | Không | Chỉ tạo khung và liệt kê commit; mỗi người tự viết | Tự viết | Từng người |
+
+**Không dùng AI để:** tạo người được phỏng vấn, trích dẫn, câu trả lời khảo sát hay người dùng thử; sửa kết quả các lượt đã chạy (`eval/run-*.csv`, `cost/simulate-*.csv`, `traces/`).

@@ -63,6 +63,7 @@ Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay
 | `python run.py simulate` | Mô phỏng chi phí khi dùng thật theo `cost/personas.yaml` (≥50 phiên) → `cost/simulate-N.csv` + `cost/simulate-N-summary.md` |
 | `python eval/grade.py eval/run-1.csv` | Chấm một lượt theo `eval/metric_spec.yaml`: chỉ điền `pass`, `ghi_chu`; người rà lại |
 | `python eval/oracle.py` · `python eval/oracle.py --json` | Đáp án độc lập theo tháng và nhóm · ghi `eval/oracle.json` |
+| `python evidence/count.py` | Đếm phỏng vấn và review đã nhập: x/n, trích dẫn, chỗ còn thiếu |
 | `python data/generate.py` | Sinh lại dữ liệu giả lập (cùng seed ra cùng file) |
 | `python -m unittest discover -s codebase -p "test_*.py"` | Test, không gọi mạng |
 | `python run.py simulate --rate-from eval/run-2.csv` | Như trên, lấy tỉ lệ đạt từ đúng lượt chỉ định. Không ghi thì khung lấy lượt `run-N` mới nhất đã chấm, cùng model, và ghi rõ đã lấy lượt nào trong bản tóm tắt |
@@ -97,7 +98,7 @@ Bộ chạy gửi **nguyên ô `input`** của câu thử vào `answer(text)`. D
 
 ## Dùng AI vào việc gì
 
-Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ câu thử nháp và tài liệu. Phần người kiểm lại: ____. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
+Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ câu thử nháp và tài liệu. Phần người kiểm lại: [CHỜ DỮ LIỆU THẬT]. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
 
 ## File mẫu — điền ở bước nào
 
@@ -129,5 +130,5 @@ Nhóm dùng Claude Code để soạn dữ liệu giả lập, code, test, bộ c
 | 4 | Bản chạy thử làm trọn lát cắt | `codebase/` · lệnh ở mục "Lệnh" |
 | 5 | Định nghĩa "tốt" + bộ câu thử | `data/DATA_CARD.md` · `eval/` |
 | 6 | Mô phỏng chi phí khi dùng thật | `cost/` |
-| 7 | Slide + demo + video dự phòng | slide trong repo (PDF, PPTX, HTML…) hoặc link slide ở form CP4 · link video: ____ |
+| 7 | Slide + demo + video dự phòng | slide trong repo (PDF, PPTX, HTML…) hoặc link slide ở form CP4 · link video: [CHỜ DỮ LIỆU THẬT] |
 | + | *Bonus:* người dùng thử | `validation/log.md` |

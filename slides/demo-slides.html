@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wilson · Giải thích chi tiêu từ sao kê</title>
+<style>
+  :root { --ink:#17212b; --mute:#5b6b7a; --line:#d8e0e8; --bg:#ffffff; --soft:#f3f6f9; --accent:#0f6b5c; --warn:#fff1b8; --warn-ink:#5c4400; }
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); background: #8a96a3; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { width: 1280px; height: 720px; background: var(--bg); position: relative; overflow: hidden; padding: 44px 60px 56px; margin: 16px auto; page-break-after: always; break-after: page; display: flex; flex-direction: column; gap: 18px; }
+  .slide:last-of-type { page-break-after: auto; break-after: auto; }
+  @media print { body { background: none; } .slide { margin: 0; } }
+  .kicker { color: var(--accent); font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  h1 { font-size: 34px; line-height: 1.2; margin-top: -10px; }
+  p, li { font-size: 20px; line-height: 1.45; }
+  ul { padding-left: 22px; display: grid; gap: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 17px; line-height: 1.35; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-size: 15px; color: var(--mute); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .box { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: grid; gap: 8px; align-content: start; }
+  .box h2 { font-size: 18px; color: var(--accent); }
+  .big { font-size: 44px; font-weight: 700; color: var(--accent); line-height: 1.1; }
+  .wait { background: var(--warn); color: var(--warn-ink); border-radius: 4px; padding: 0 6px; font-weight: 600; font-size: .9em; }
+  .flow { display: flex; align-items: stretch; gap: 6px; }
+  .step { flex: 1; border: 2px solid var(--line); border-radius: 10px; padding: 10px; font-size: 15px; line-height: 1.35; text-align: center; display: grid; align-content: center; gap: 4px; }
+  .step b { font-size: 16px; }
+  .step.ai { border-color: var(--accent); background: #e6f4f1; }
+  .arrow { align-self: center; color: var(--mute); font-size: 22px; }
+  .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 17px; background: #17212b; color: #e8eef3; border-radius: 8px; padding: 12px 16px; line-height: 1.5; white-space: pre-wrap; }
+  footer { position: absolute; left: 60px; right: 60px; bottom: 16px; display: flex; justify-content: space-between; gap: 20px; font-size: 13px; color: var(--mute); border-top: 1px solid var(--line); padding-top: 8px; }
+  footer a { color: var(--mute); }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="kicker">1 · Người dùng &amp; pain</div>
+  <h1>Cuối tháng muốn biết tiền đi đâu, chỉ có một danh sách giao dịch viết tắt</h1>
+  <div class="cols">
+    <div class="box">
+      <h2>Ai · việc gì · vướng đâu (giả thuyết)</h2>
+      <p>Nhân viên văn phòng trẻ 22–30 tuổi, thanh toán hằng ngày qua app ngân hàng hoặc ví.</p>
+      <p>Muốn xem tiền đã đi đâu. Mô tả viết tắt, không gộp được theo nhóm → phải tự lọc cộng, hoặc bỏ qua.</p>
+      <p>Giả thuyết đúng nếu <b>≥3/4 người</b> được hỏi kể được một lần cụ thể trong 1 tháng qua.</p>
+    </div>
+    <div class="box">
+      <h2>Bằng chứng</h2>
+      <div class="big"><span class="wait">[CHỜ DỮ LIỆU THẬT: x/n người]</span></div>
+      <p>Review công khai: <span class="wait">[CHỜ DỮ LIỆU THẬT: x/N (%)]</span></p>
+      <p>“<span class="wait">[CHỜ DỮ LIỆU THẬT: trích dẫn nguyên văn — vai]</span>”</p>
+    </div>
+  </div>
+  <footer><span>Nguồn: evidence/hypothesis.md · evidence/summary.md</span><span>Nhóm Wilson · Track E · 1/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">2 · Vì sao chọn bài này</div>
+  <h1>Ba hướng, chọn E1 (dự kiến, chốt theo bằng chứng)</h1>
+  <table>
+    <tr><th>Hướng</th><th>Người gặp</th><th>Lần / tháng</th><th>Mỗi lần tốn</th><th>Làm kịp?</th><th>Quyết định</th></tr>
+    <tr><td><b>E1</b> Giải thích chi tiêu</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td><td>Đã chạy hết luồng</td><td><b>Dự kiến chọn</b></td></tr>
+    <tr><td><b>E2</b> Cảnh báo ngân sách</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td><td>Cần dữ liệu ngân sách</td><td>Dự kiến loại</td></tr>
+    <tr><td><b>E3</b> Giao dịch bị tạm chặn</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td><td>Hành động không đảo được, cần người trong cuộc</td><td>Dự kiến loại</td></tr>
+  </table>
+  <div class="box">
+    <h2>Impact / tháng = N × p × f × t</h2>
+    <p>N = <b>30.000</b> người dùng (tự ước tính: 0,1% của hơn 30 triệu người dùng MoMo) · p, f, t từ phỏng vấn</p>
+    <p>= <span class="wait">[CHỜ DỮ LIỆU THẬT: phút / tháng]</span></p>
+  </div>
+  <footer><span>Nguồn: spec.md §2 · <a href="https://daibieunhandan.vn/momo-ky-niem-15-nam-nguoi-khong-lo-fintech-viet-nam-dat-30-trieu-nguoi-dung-cong-nghe-ai-lam-chu-loi-van-hanh-10397472.html">Báo Đại biểu Nhân dân, 28/11/2025</a></span><span>2/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">3 · Giải pháp</div>
+  <h1>Model hiểu câu hỏi và gán nhóm; code tính mọi con số</h1>
+  <p>Hỏi bằng tiếng Việt về chi tiêu của mình → AI chọn khoảng thời gian và công cụ, để “Không rõ” khi không đủ căn cứ → câu trả lời có số do code tính, kèm bảng giao dịch, sửa được nhóm chi.</p>
+  <div class="flow">
+    <div class="step"><b>Code</b>che OTP, số thẻ</div><div class="arrow">→</div>
+    <div class="step ai"><b>AI lần 1</b>câu hỏi → kế hoạch JSON</div><div class="arrow">→</div>
+    <div class="step"><b>Code</b>kiểm kế hoạch · từ chối · hỏi lại</div><div class="arrow">→</div>
+    <div class="step"><b>Công cụ</b>đọc giao dịch, gán theo quy tắc</div><div class="arrow">→</div>
+    <div class="step ai"><b>AI lần 2</b>gán nhóm mô tả lạ (đã lọc mô tả đáng ngờ)</div><div class="arrow">→</div>
+    <div class="step"><b>Code</b>tính, dựng câu từ mẫu, kiểm số</div>
+  </div>
+  <div class="cols">
+    <div class="box"><h2>Workflow cố định, tối đa 2 lần gọi model</h2><p>Các bước biết trước nên đo được từng bước. Agent tự chọn bước sẽ tốn token, khó tái hiện lỗi và mở đường cho model tự tính.</p></div>
+    <div class="box"><h2>AI tự làm khi chắc, chuyển người khi không</h2><p>Đọc và tính: tự động. Không đủ căn cứ: “Không rõ” hoặc hỏi lại. Đổi dữ liệu: chỉ ghi khi người dùng xác nhận. Không có công cụ chuyển tiền.</p></div>
+  </div>
+  <footer><span>Nguồn: spec.md §4 · codebase/agent.py (MAX_MODEL_CALLS = 2) · codebase/tools.py</span><span>3/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">4 · Demo trực tiếp</div>
+  <h1>Một câu thường, một câu khó</h1>
+  <div class="cols">
+    <div class="box">
+      <h2>Thường · tổng chi một tháng</h2>
+      <div class="mono">Trong tháng 10 mình chi tất cả bao nhiêu?</div>
+      <p><b>39.061.000đ</b>, 80 giao dịch.</p>
+      <p>Kèm tổng theo nhóm, phần “Không rõ” và bảng giao dịch có mã.</p>
+    </div>
+    <div class="box">
+      <h2>Khó · so với tháng đang dở</h2>
+      <div class="mono">Tháng 11 mình chi tăng hay giảm so với tháng 10?</div>
+      <p>Cảnh báo tháng 11 mới đến ngày 27. Cùng kỳ: <b>37.478.000đ → 19.720.000đ</b>, giảm <b>47,4%</b>.</p>
+      <p>Câu dự phòng: hỏi tháng 8 (không có dữ liệu) · xin xem sao kê người khác (từ chối).</p>
+    </div>
+  </div>
+  <p>Dữ liệu trên màn hình là <b>giả lập</b>. Mạng hỏng: chiếu video dự phòng.</p>
+  <footer><span>Nguồn: eval/benchmark.csv (C01, C04, C06, C09) · đáp án eval/oracle.py</span><span>4/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">5 · Đánh giá thế nào</div>
+  <h1>Đạt khi ≥80% câu qua, 100% câu từ chối qua, 0 câu lệch số</h1>
+  <div class="cols">
+    <div class="box">
+      <h2>Dữ liệu và bộ câu thử</h2>
+      <ul>
+        <li>Sao kê giả lập có seed: <b>253</b> giao dịch người dùng + <b>40</b> người khác</li>
+        <li>Đáp án tính độc lập bằng <code>eval/oracle.py</code></li>
+        <li>Bản nháp <b>10 câu</b>: 1 thường · 5 khó · 4 từ chối</li>
+        <li>Bộ cuối: <span class="wait">[CHỜ DỮ LIỆU THẬT: số câu, ≥1/3 từ nguồn thật]</span></li>
+        <li>5 metric: khớp công cụ · đúng đáp án · từ chối đúng · đúng kế hoạch · không đoán bừa</li>
+      </ul>
+    </div>
+    <div>
+      <table>
+        <tr><th></th><th>Lượt 1</th><th>Lượt 2</th></tr>
+        <tr><td>Câu qua</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td><td><span class="wait">[CHỜ]</span></td></tr>
+        <tr><td>Từ chối</td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td></tr>
+        <tr><td>Câu lệch số</td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td></tr>
+        <tr><td>Run ID</td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td></tr>
+      </table>
+      <p style="margin-top:14px">Nhóm lỗi lớn nhất: <span class="wait">[CHỜ DỮ LIỆU THẬT]</span></p>
+      <p>Đã sửa gì: <span class="wait">[CHỜ DỮ LIỆU THẬT]</span></p>
+    </div>
+  </div>
+  <footer><span>Nguồn: data/DATA_CARD.md · spec.md §7 · eval/README.md · eval/report.md</span><span>5/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">6 · Chi phí khi dùng thật</div>
+  <h1>Chi phí mỗi câu trả lời đạt, so với thời gian tiết kiệm được</h1>
+  <table>
+    <tr><th>Model (USD / 1M token vào · ra)</th><th>Chi phí / task thành công</th><th>/ tháng · 3.000 người</th><th>/ tháng · 30.000</th><th>/ tháng · 300.000</th></tr>
+    <tr><td>gemini-3.5-flash-lite (0,30 · 2,50)</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td></tr>
+    <tr><td>gemini-3.8-flash (1,50 · 7,50)</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td><td><span class="wait">[CHỜ]</span></td></tr>
+  </table>
+  <div class="cols">
+    <div class="box"><h2>Cách tính</h2><p>Chi phí / phiên ÷ tỉ lệ đạt lượt 2. Mô phỏng ≥50 phiên, seed 42, 3 kiểu người dùng, token đọc từ log.</p></div>
+    <div class="box"><h2>So với impact / người / tháng</h2><p><span class="wait">[CHỜ DỮ LIỆU THẬT: chi phí so với f × t phút → đáng làm hay không]</span></p></div>
+  </div>
+  <footer><span>Nguồn: cost/personas.yaml · cost/cost-estimate.md · giá: ai.google.dev/gemini-api/docs/pricing (BTC tra 25/11/2026) · số người dùng: tự ước tính</span><span>6/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">7 · Kết luận</div>
+  <h1>Go / Iterate / Stop: <span class="wait">[CHỜ DỮ LIỆU THẬT]</span></h1>
+  <table>
+    <tr><th>Điều kiện để Go</th><th>Ngưỡng</th><th>Kết quả</th></tr>
+    <tr><td>Pain có thật</td><td>≥3/4 người kể được lần cụ thể</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td></tr>
+    <tr><td>Chất lượng</td><td>≥80% câu qua · 100% từ chối · 0 câu lệch số</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td></tr>
+    <tr><td>Đáng tiền</td><td>Giá trị thời gian tiết kiệm lớn hơn chi phí / người / tháng</td><td><span class="wait">[CHỜ DỮ LIỆU THẬT]</span></td></tr>
+  </table>
+  <p>Thiếu một điều kiện → Iterate hoặc Stop, nói rõ thiếu gì.</p>
+  <footer><span>Nguồn: trang 1, 5, 6 · evidence/hypothesis.md · spec.md §7</span><span>7/8</span></footer>
+</section>
+
+<section class="slide">
+  <div class="kicker">8 · Nếu có thêm 1 tuần</div>
+  <h1>Sửa chỗ model đoán và chỗ model hiểu sai câu hỏi</h1>
+  <table>
+    <tr><th>Việc</th><th>Vì sao (thấy khi chạy thử ngày 27/11, chưa phải lượt đánh giá)</th></tr>
+    <tr><td>Luật trong code cho mô tả mã hoá đơn chung chung; lưu nhãn đã gán</td><td>“THANH TOAN HD 778120” bị xếp vào Hoá đơn; nhãn khác nhau giữa hai lần hỏi</td></tr>
+    <tr><td>Phân biệt “theo từng nhóm” với nhóm “Không rõ”; hỏi theo nơi bán với theo nhóm</td><td>Hai kiểu câu này đã bị hiểu sai</td></tr>
+    <tr><td>Xử lý câu vừa có chuỗi nhạy cảm vừa hỏi chi tiêu</td><td>Câu có OTP bị từ chối nhầm</td></tr>
+  </table>
+  <p>Ưu tiên cuối cùng theo lượt 2 và người dùng thử: <span class="wait">[CHỜ DỮ LIỆU THẬT]</span></p>
+  <footer><span>Nguồn: spec.md §9 · eval/report.md §4 · validation/log.md</span><span>8/8</span></footer>
+</section>
+
+</body>
+</html>

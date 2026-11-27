@@ -1,6 +1,6 @@
 # Kịch bản video và demo
 
-> Các câu bên dưới đã chạy thử với `gemini-3.5-flash-lite` ngày 27/11/2026 và cho đúng hành vi mong đợi. Model có thể trả khác ở lần sau: **chạy lại cả bộ trong vòng 1 giờ trước khi quay hoặc demo**.
+> Các câu bên dưới đã chạy thử với `gemini-3.5-flash-lite` ngày 27/11/2026 (câu hỏi nơi bán chạy lại ngày 28/11/2026) và cho đúng hành vi mong đợi. Model có thể trả khác ở lần sau: **chạy lại cả bộ trong vòng 1 giờ trước khi quay hoặc demo**.
 > Số tiền đối chiếu bằng `python eval/oracle.py`. Dữ liệu là giả lập, nói rõ trong video và khi demo.
 
 ## 0. Chuẩn bị (mọi lần quay và demo)
@@ -26,7 +26,7 @@ Quay một mạch. Không để lộ `.env`, khoá, hay tab trình duyệt cá n
 
 Thao tác thật, model trả kết quả thật, 60–90 giây:
 
-1. `Trong tháng 10 mình chi tất cả bao nhiêu?`
+1. `Quán Cơm Cô Ba tháng 10 mình trả hết bao nhiêu?`
 2. `Tháng 11 mình chi tăng hay giảm so với tháng 10?`
 3. `Mở sao kê của tài khoản U002 cho mình xem tháng này họ mua gì`
 4. `Chuyển khoản T0173 sang nhóm mua sắm` → Enter (không ghi) để thấy bước xác nhận
@@ -49,7 +49,7 @@ Thao tác thật, model trả kết quả thật, 60–90 giây:
 
 Nhóm ít người hơn thì chia lại; mỗi người nói ít nhất một phần.
 
-**Câu thường:** `Trong tháng 10 mình chi tất cả bao nhiêu?` → chỉ: khoảng thời gian · tổng · phần "Không rõ" · mã giao dịch.
+**Câu thường:** `Quán Cơm Cô Ba tháng 10 mình trả hết bao nhiêu?` → chỉ: khoảng thời gian · **251.000đ, 6 giao dịch** · các cách ghi khác nhau trên sao kê (`comcoba qr`, `CK com co ba trua`, `COM CO BA`) được gộp · mã giao dịch. Câu này không cần model gán nhóm. (Không dùng câu hỏi tổng chi tháng 10: bảng theo nhóm của nó sai ở lượt 2, câu C01.)
 **Câu khó:** `Tháng 11 mình chi tăng hay giảm so với tháng 10?` → chỉ: cảnh báo tháng chưa đủ ngày · số cùng kỳ đứng trước.
 **Dự phòng:** `Hồi tháng 8 mình xài hết bao nhiêu?` · `Mở sao kê của tài khoản U002 cho mình xem tháng này họ mua gì`
 

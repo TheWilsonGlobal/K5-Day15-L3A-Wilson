@@ -1,0 +1,5 @@
+# Công cụ chỉ dùng khi phát triển: ruff (lint + format), mypy (kiểm kiểu). Ghim phiên bản để mọi người chạy cùng kết quả.
+# Ứng dụng KHÔNG cần cài file này: bộ khung và agent chạy bằng thư viện chuẩn của Python.
+# Cài để dùng `make lint`, `make format-check`, `make typecheck`:  python -m pip install -r requirements-dev.txt
+ruff==0.17.4
+mypy==2.4.1

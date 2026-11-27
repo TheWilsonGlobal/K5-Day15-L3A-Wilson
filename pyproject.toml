@@ -1,0 +1,26 @@
+# Cấu hình công cụ dev (ruff, mypy) — chỉ dùng cho `make lint`, `make format`, `make typecheck`.
+# Không có [project] hay [build-system]: bộ khung chạy bằng thư viện chuẩn, không cần cài gì.
+
+[tool.ruff]
+target-version = "py310"
+# Bốn file khung không được sửa, kể cả bằng `make format` hay autofix. force-exclude: áp dụng cả khi đưa file thẳng lên dòng lệnh.
+force-exclude = true
+extend-exclude = [
+    "run.py",
+    "codebase/tracing.py",
+    "eval/run_eval.py",
+    "cost/simulate.py",
+]
+
+[tool.ruff.lint]
+# Bộ mặc định của ruff (E4, E7, E9, F): lỗi thật, không báo lỗi định dạng.
+# Không bật E501 hay các luật layout, để việc xuống dòng do ruff format lo.
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.10"
+# Khớp theo đường dẫn: tên file khung, bất kể dấu / hay \ trên Windows.
+exclude = ['(^|[/\\])(tracing|run_eval|simulate)\.py$']

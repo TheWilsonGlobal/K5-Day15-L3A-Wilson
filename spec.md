@@ -1,4 +1,4 @@
-# AI SPEC — Giải thích chi tiêu từ sao kê · Nhóm Wilson · Phòng H209 · Zone 6
+# AI SPEC — Giải thích chi tiêu từ sao kê · Nhóm Wilson · Phòng H209 · Zone 4
 
 > Mốc nộp: §7 chốt chuẩn "đạt" tại **CP2 19:30 Thứ Sáu 27/11** · §0–§7 nộp **CP3 10:00 Thứ Bảy 28/11** · đủ §0–§10 **CP4 14:30 Thứ Bảy 28/11** · §10 changelog ghi tiếp đến **23:59 Thứ Bảy 28/11**.
 > Đầu mỗi mục ghi bước guide (`02-guide.md` trong repo đề) chỉ cách điền. Mỗi mục ngắn, có số và nguồn; chi tiết để ở file được trỏ tới. Xoá dòng hướng dẫn trong ngoặc vuông khi điền xong.
@@ -8,34 +8,34 @@ Data BTC cấp đã dùng (nếu có — không commit nguyên file): không (tr
 
 ## §0. Hiện tại việc này diễn ra thế nào *(guide 1.1)*
 
-> Bản nháp theo giả thuyết. Chưa kiểm trên tài khoản thật, chưa có ảnh chụp.
+> Luồng dưới đây là giả thuyết, mới đối chiếu một phần bằng review công khai. Chưa kiểm trên tài khoản thật, chưa phỏng vấn.
 
-- Luồng hiện tại (giả định, **chưa kiểm**, kiểm bằng phỏng vấn câu 1, 2, 4):
+- Luồng hiện tại (giả định, **chưa kiểm**; kiểm bằng phỏng vấn câu 1, 2, 4):
   1. Mở app ngân hàng hoặc ví, vào lịch sử giao dịch.
   2. Cuộn danh sách, đoán từng dòng viết tắt là gì.
   3. Tự cộng các khoản cùng loại, hoặc xem biểu đồ nhóm chi nếu app có.
   4. Với giao dịch không hiểu: mở chi tiết, nhớ lại, hoặc bỏ qua.
-- Một lần mất bao lâu, vướng ở bước nào: [CHỜ DỮ LIỆU THẬT: câu 1–2 của phỏng vấn]
-- Công cụ đang dùng cho việc này (theo trang công khai, xem 27/11/2026, **chưa kiểm trong app**): MoMo có Quản lý chi tiêu, tự phân loại giao dịch trong MoMo, báo cáo tuần và tháng ([trang tính năng](https://www.momo.vn/quan-ly-chi-tieu), [thông báo phân loại giao dịch](https://www.momo.vn/tin-tuc/thong-bao/ra-mat-tinh-nang-moi-phan-loai-giao-dich-de-theo-5687)). App ngân hàng nhóm dùng: [CHỜ DỮ LIỆU THẬT: thành viên mở app của mình, ghi có hay không có thống kê theo nhóm]
-- Ảnh luồng hiện tại (đã che, **không chụp danh sách giao dịch**) hoặc trang trợ giúp: [CHỜ DỮ LIỆU THẬT]
+- Một lần mất bao lâu: khoảng **10 phút** *(tự ước tính, chưa phỏng vấn)*. Vướng ở đâu theo review: bị trừ tiền hoặc phí không hiểu vì sao (7/150), không tổng hợp được (2/150), khó tìm hoặc xem lại lịch sử (2/150) (`evidence/data-mining.md`).
+- Công cụ đang dùng cho việc này (theo trang công khai, xem 27/11/2026, **chưa kiểm trong app**): MoMo có Quản lý chi tiêu, tự phân loại giao dịch trong MoMo, báo cáo tuần và tháng ([trang tính năng](https://www.momo.vn/quan-ly-chi-tieu), [thông báo phân loại giao dịch](https://www.momo.vn/tin-tuc/thong-bao/ra-mat-tinh-nang-moi-phan-loai-giao-dich-de-theo-5687)). App ngân hàng nhóm dùng: [CHỜ DỮ LIỆU THẬT: thành viên mở app của mình, ghi có hay không có thống kê theo nhóm — bổ sung trước CP4]
+- Ảnh luồng hiện tại: chưa chụp. Tạm dẫn trang tính năng công khai của MoMo ở dòng trên (**không chụp danh sách giao dịch**).
 
 ## §1. Người dùng & bằng chứng *(guide 1.1, 1.2)*
 
-> Bốn dòng đầu là **giả thuyết** viết trước khi có bằng chứng (`evidence/hypothesis.md`); sửa theo kết quả thật.
+> Bốn dòng đầu là **giả thuyết** viết trước khi có bằng chứng (`evidence/hypothesis.md`); dòng cuối là bằng chứng đã đếm.
 
 - **Người dùng chính:** nhân viên văn phòng trẻ (22–30 tuổi) thanh toán hằng ngày qua app ngân hàng số hoặc ví điện tử.
 - **Việc họ cố làm xong:** xem lại tiền của mình đã đi đâu trong một khoảng thời gian, từ lịch sử giao dịch, vào cuối tuần hoặc cuối tháng.
-- **Hôm nay giải bằng gì, hỏng ở đâu, vì sao chưa bỏ (giả thuyết):** cuộn lịch sử giao dịch hoặc xem biểu đồ của app; hỏng ở mô tả viết tắt và khoản không gộp được theo nhóm; chưa bỏ vì đó là nơi duy nhất có đủ giao dịch. [CHỜ DỮ LIỆU THẬT: câu 4 phỏng vấn]
+- **Hôm nay giải bằng gì, hỏng ở đâu, vì sao chưa bỏ (giả thuyết):** cuộn lịch sử giao dịch hoặc xem biểu đồ của app; hỏng ở mô tả viết tắt và khoản không gộp được theo nhóm; chưa bỏ vì đó là nơi duy nhất có đủ giao dịch. Chưa kiểm bằng phỏng vấn.
 - **Pain:** nhân viên văn phòng trẻ — muốn biết trong tháng tiền đã đi đâu — vướng ở danh sách giao dịch dài, mô tả viết tắt, không gộp theo nhóm — mất thời gian tự lọc cộng hoặc bỏ qua, không kiểm soát được chi tiêu.
-- **Bằng chứng — số chính + kết luận** (chi tiết: `evidence/summary.md`): review App Store VN **11/150 (7%)** kể khó khăn khi xem, hiểu hoặc tổng hợp giao dịch (người kiểm 150/150; 7/11 là bị trừ tiền hoặc phí không hiểu vì sao) · phỏng vấn: [CHỜ DỮ LIỆU THẬT: x/n người] · giả thuyết **chưa kết luận** (ngưỡng tính trên phỏng vấn).
+- **Bằng chứng — số chính + kết luận** (chi tiết và ≥5 trích dẫn: `evidence/summary.md`): review App Store VN **11/150 (7%)** kể khó khăn khi xem, hiểu hoặc tổng hợp giao dịch (người kiểm 150/150, xem 27/11/2026). Pain có thật trong mẫu, nhưng **lệch giả thuyết**: 7/11 là bị trừ tiền hoặc phí không hiểu vì sao; không đoạn trích nào than mô tả viết tắt. Phỏng vấn: [CHỜ DỮ LIỆU THẬT: x/n người, bổ sung trước CP4] · giả thuyết **chưa kết luận** (ngưỡng tính trên phỏng vấn).
 
 ## §2. Impact & quyết định chọn *(guide 1.3)*
 
 | Hướng | Bao nhiêu người gặp | Bao nhiêu lần / tháng | Mỗi lần tốn gì | Impact / tháng | Làm kịp không | Chọn? |
 |---|---|---|---|---|---|---|
-| **E1** Giải thích chi tiêu từ sao kê (hỏi đáp có dẫn chứng) | [CHỜ DỮ LIỆU THẬT: câu 1, x/n] | [CHỜ DỮ LIỆU THẬT: câu 3] | [CHỜ DỮ LIỆU THẬT: câu 2, phút] | [CHỜ DỮ LIỆU THẬT] | Được: bản chạy thử đã đi hết luồng | Dự kiến chọn, chốt sau bằng chứng |
-| **E2** Cảnh báo sắp vượt ngân sách + gợi ý cắt giảm | [CHỜ DỮ LIỆU THẬT: câu 5, x/n] | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] | Cần thêm dữ liệu ngân sách ≥3 persona | Dự kiến loại |
-| **E3** Giao dịch nghi lừa đảo bị tạm chặn | [CHỜ DỮ LIỆU THẬT: câu 6, x/n] | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] | [CHỜ DỮ LIỆU THẬT] | Khó: cần người trong cuộc phải hẹn trước | Dự kiến loại |
+| **E1** Giải thích chi tiêu từ sao kê (hỏi đáp có dẫn chứng) | 11/150 (7%) review → 2.200 trên 30.000 người dùng *(tự ước tính: lấy tỉ lệ review làm tỉ lệ người dùng)* | 2 *(tự ước tính)* | 10 phút *(tự ước tính)* | **44.000 phút ≈ 733 giờ** *(tự ước tính)* | Được: bản chạy thử đã đi hết luồng, có Lượt 1 | **Chọn** |
+| **E2** Cảnh báo sắp vượt ngân sách + gợi ý cắt giảm | 0/150 review (`ngan_sach`) | 1 *(tự ước tính)* | Tiền chi vượt ngân sách; chưa đo | 0 theo mẫu review (không chứng minh là không ai gặp) | Cần thêm dữ liệu ngân sách ≥3 persona | Loại |
+| **E3** Giao dịch nghi lừa đảo bị tạm chặn | 0/150 review (`gd_bi_chan`) | Chưa ước tính | Bị giữ tiền hoặc mất tiền; chưa đo | 0 theo mẫu review (không chứng minh là không ai gặp) | Khó: cần người trong cuộc phải hẹn trước | Loại |
 
 So sánh theo thiết kế (nhóm đánh giá, không phải bằng chứng):
 
@@ -47,13 +47,15 @@ So sánh theo thiết kế (nhóm đánh giá, không phải bằng chứng):
 
 - **Công thức impact / tháng** (phút người dùng tiết kiệm được, trần trên): **Impact = N × p × f × t**
   - N = số người dùng sản phẩm ở kịch bản cơ sở: 30.000 *(tự ước tính: 0,1% của hơn 30 triệu người dùng MoMo theo [Báo Đại biểu Nhân dân, 28/11/2025](https://daibieunhandan.vn/momo-ky-niem-15-nam-nguoi-khong-lo-fintech-viet-nam-dat-30-trieu-nguoi-dung-cong-nghe-ai-lam-chu-loi-van-hanh-10397472.html))*
-  - p = tỉ lệ gặp pain: [CHỜ DỮ LIỆU THẬT: x/n từ phỏng vấn]
-  - f = số lần / người / tháng: [CHỜ DỮ LIỆU THẬT: câu 3]
-  - t = số phút mỗi lần: [CHỜ DỮ LIỆU THẬT: câu 2]
-  - Impact / tháng = 30.000 × p × f × t = [CHỜ DỮ LIỆU THẬT] phút
-  - Impact / người gặp pain / tháng = f × t = [CHỜ DỮ LIỆU THẬT] phút (dùng để so với chi phí ở §8)
-- **Hướng ĐÃ LOẠI + vì sao:** E2, E3 — lý do chốt sau khi có số: [CHỜ DỮ LIỆU THẬT]. Lý do dự kiến: E2 cần dữ liệu ngân sách và đo "gợi ý tốt" khó trong hai ngày; E3 có hành động không đảo lại được và cần người trong cuộc.
-- **Số lần / tháng của từng kiểu người dùng** (persona ở §8): `cost/personas.yaml`, hiện *(tự ước tính)*; [CHỜ DỮ LIỆU THẬT: thay bằng số phỏng vấn]
+  - p = tỉ lệ gặp pain: 11/150 (`evidence/data-mining.md`). Đây là tỉ lệ **review**, dùng làm tỉ lệ người dùng là *(tự ước tính)*
+  - f = số lần / người / tháng: 2, cuối tuần hoặc cuối tháng *(tự ước tính, chờ phỏng vấn)*
+  - t = số phút mỗi lần: 10 *(tự ước tính, chờ phỏng vấn)*
+  - **Impact / tháng = 30.000 × 11/150 × 2 × 10 = 44.000 phút ≈ 733 giờ** *(tự ước tính)*
+  - Impact / người gặp pain / tháng = f × t = 20 phút *(tự ước tính; nằm trong khoảng 15–30 phút ở `canvas.md`)* (dùng để so với chi phí ở §8)
+  - Độ nhạy: t = 5–15 phút → 22.000–66.000 phút. Chỉ tính `kho_tong_hop` + `kho_tim_gd` (4/150, phần bản chạy thử giải trực tiếp nhất) → 16.000 phút ≈ 267 giờ.
+  - Giới hạn: người viết review thường đang bực, không đại diện người dùng; nhóm lớn nhất (khoản trừ không hiểu vì sao, 7/11) bản chạy thử mới giải một phần: chỉ ra giao dịch, nghi trừ trùng và khoản "Không rõ", không biết lý do ngân hàng thu phí.
+- **Hướng ĐÃ LOẠI + vì sao:** E2 — 0/150 review, cần dữ liệu ngân sách và khó đo "gợi ý tốt" trong hai ngày. E3 — 0/150 review, hành động không đảo lại được và cần người trong cuộc. E1 có bằng chứng mạnh nhất trong ba hướng. Phỏng vấn trước CP4 có thể làm đổi số.
+- **Số lần / tháng của từng kiểu người dùng** (persona ở §8): `cost/personas.yaml`, hiện *(tự ước tính)*; [CHỜ DỮ LIỆU THẬT: thay bằng số phỏng vấn trước CP4]
 
 ## §3. Giải pháp tương tự *(guide 2.1)*
 
@@ -180,7 +182,8 @@ Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi mod
 
 - **Quy ước đáp án:** (a) câu hỏi không nói thời gian → lấy tháng hiện tại (11/2026, đến ngày 27) và nói rõ; (b) hoàn tiền **không** trừ vào tổng chi, được nêu riêng; (c) tháng đang dở (01–27/11/2026) → so cùng kỳ tháng trước (01–27/10/2026), đánh dấu `partial`, rồi mới nêu số đang có.
 - Cách chấm: `python eval/grade.py eval/run-N.csv` (chỉ điền `pass`, `ghi_chu`), người rà lại từng dòng.
-- Kết quả: lượt 1 [CHỜ DỮ LIỆU THẬT: chưa chạy] · lượt 2 [CHỜ DỮ LIỆU THẬT] — run ID: [CHỜ DỮ LIỆU THẬT] → chi tiết `eval/report.md`, hồ sơ `eval/README.md`
+- Kết quả **lượt 1**: **14/21 (66,7%)** câu qua · thuong 1/4 · kho 7/11 · tu_choi 6/6 · `so_khop_cong_cu` 21/21 · 0 lỗi kỹ thuật → **chưa đạt chuẩn** (thiếu ngưỡng 80%) · run ID `run-1@20261127-181134` · model `gemini-3.5-flash-lite` · người rà xác nhận 27/11/2026
+- Kết quả lượt 2: [CHỜ DỮ LIỆU THẬT: chưa chạy] → chi tiết `eval/report.md`, hồ sơ `eval/README.md`
 
 ## §8. Chi phí khi dùng thật *(guide 4.2)*
 
@@ -222,7 +225,7 @@ Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi mod
 
 | Thời điểm | Đổi gì | Vì sao (trỏ về câu thử / lỗi / bằng chứng nào) |
 |---|---|---|
-|  |  |  |
+| 27/11 tối, sau lượt 1 | Điền §0–§2 (số từ 11/150 review và ước tính có ghi rõ); sửa tiêu đề thành Zone 4; thêm kết quả lượt 1 vào §7. Không đổi chuẩn "đạt", metric, câu thử, code | Chuẩn bị CP3; `evidence/summary.md`, `eval/run-1.csv` |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 

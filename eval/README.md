@@ -61,7 +61,7 @@ python run.py score eval/run-N.csv       # % đạt theo type
 
 | Lượt | Run ID | Model | Cấu hình (prompt / công cụ / thay đổi) | Đạt / tổng | % | Đạt chuẩn? |
 |---|---|---|---|---|---|---|
-| 1 | [CHỜ DỮ LIỆU THẬT] | | | | | |
+| 1 | `run-1@20261127-181134` (27/11/2026 18:11) | `gemini-3.5-flash-lite` | Prompt và công cụ gốc tại commit `1e37075`, `--wait 4`; 0 lỗi kỹ thuật; người rà xác nhận 21/21 dòng, không đổi `pass` của máy | 14/21 | 66,7% | Chưa (cần ≥ 80%; `tu_choi` 6/6 và `so_khop_cong_cu` 21/21 đạt) |
 | 2 | [CHỜ DỮ LIỆU THẬT] | | | | | |
 
 Lượt chạy lại vì lỗi kỹ thuật, lượt sau CP4: ghi thêm dòng, không sửa dòng cũ.
@@ -73,4 +73,5 @@ Lượt chạy lại vì lỗi kỹ thuật, lượt sau CP4: ghi thêm dòng, k
 
 ## 6. Lỗi chính
 
-[CHỜ DỮ LIỆU THẬT: sau lượt 1 và 2, tóm 2–3 dòng từ `eval/report.md`: nhóm lỗi lớn nhất · đã sửa gì · còn lại gì]
+- Lượt 1: nhóm lỗi lớn nhất là **cùng một mô tả mã hoá đơn lúc để "Không rõ", lúc gán Hoá đơn** (4/7 câu trượt: C05, C11, C14, C30). Còn lại: hiểu sai câu hỏi (C07, C17) và không khớp tên nơi bán (C25). Chi tiết: `eval/report.md`.
+- Lượt 2 (đã sửa gì, còn lại gì): [CHỜ DỮ LIỆU THẬT: sau lượt 2]

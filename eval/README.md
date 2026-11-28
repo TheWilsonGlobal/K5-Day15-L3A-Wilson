@@ -63,6 +63,7 @@ python run.py score eval/run-N.csv       # % đạt theo type
 |---|---|---|---|---|---|---|
 | 1 | `run-1@20261127-181134` (27/11/2026 18:11) | `gemini-3.5-flash-lite` | Prompt và công cụ gốc tại commit `1e37075`, `--wait 4`; 0 lỗi kỹ thuật; người rà xác nhận 21/21 dòng, không đổi `pass` của máy | 14/21 | 66,7% | Chưa (cần ≥ 80%; `tu_choi` 6/6 và `so_khop_cong_cu` 21/21 đạt) |
 | 2 | `run-2@20261127-191050` (27/11/2026 19:10) | `gemini-3.5-flash-lite` | Sau 4 sửa đổi (`eval/report.md` §3), cùng `grade.py` và `oracle.json`, `--wait 4`; 0 lỗi kỹ thuật; người rà xác nhận 21/21 dòng, không đổi `pass` | 20/21 | 95,2% | **Đạt** (chấm chặt hơn C07, C11, C17: 17/21 = 81,0%, vẫn đạt) |
+| 3 | `run-3@20261128-143444` (28/11/2026 14:34) | `gemini-3.5-flash-lite` | Chạy kiểm tra lại trên cùng cấu hình với Lượt 2 (`codebase/` không đổi, 0 lỗi kỹ thuật); `grade.py` chấm | 19/21 | 90,0% | **Đạt** (`so_khop_cong_cu` 21/21, `tu_choi_dung` 6/6, `khong_doan_bua` 12/12) |
 
 Lượt chạy lại vì lỗi kỹ thuật, lượt sau CP4: ghi thêm dòng, không sửa dòng cũ.
 

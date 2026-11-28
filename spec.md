@@ -235,4 +235,4 @@ Khi số trong câu trả lời không khớp công cụ, hoặc lời gọi hi�
 
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
-|  |  |  |
+| 28/11 15:10 | Ghi nhận Lượt 3 (`run-3@20261128-143444`: 19/21 = 90%, đạt §7) vào `eval/README.md` và hoàn thiện `reflection/pham-ngoc-son.md`. Không sửa chuẩn "đạt", câu thử, dữ liệu hay code bản chạy thử | Đủ hồ sơ lượt đã chạy và hoàn tất reflection trước hạn 23:59 |
